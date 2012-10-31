@@ -91,13 +91,15 @@
 		var mapOptions = {
 	    	center: new google.maps.LatLng(37, -121),
 	        zoom: 8,
-	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	        mapTypeId: google.maps.MapTypeId.ROADMAP,
+	        disableDoubleClickZoom: true
 	    };
 	    var map = new google.maps.Map(document.getElementById("map_canvas"),
 	    	mapOptions);
     	//var geocoder = new google.maps.Geocoder();
 	      
     	//google.maps.event.addListener(map, 'mouseup', function(e) 	    	
+    	google.maps.event.clearListeners(map, 'dblclick');
 		google.maps.event.addListener(map, 'dblclick', function(e) {
     	    var center = map.getCenter();
     	    var lat = center.Xa;

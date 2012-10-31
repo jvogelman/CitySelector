@@ -29,6 +29,19 @@ function WikipediaView(element) {
 		
 	}
 	
+	this._exclusionList = new Array('References', 'References and notes', 'See also', 'External links', 'Further reading');
+	
+	// return true if tabName is on the _exclusionList
+	this.exclude = function(tabName) {
+		for (var i = 0; i < _this._exclusionList.length; i++) {
+			if (_this._exclusionList[i] == tabName) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	this.displayPage = function(pageName, textVal) {
 		// add description at the top followed by tabbed nav bar of contents
 	
@@ -46,6 +59,10 @@ function WikipediaView(element) {
 						var index = sections[i].index;
 						var level = sections[i].level;
 						var number = sections[i].number;
+						
+						if (_this.exclude(name)) {
+							continue;
+						}
 	
 						// if it's level 2, let's devote a tab to it
 						if (level == 2) {
@@ -64,7 +81,7 @@ function WikipediaView(element) {
 					var str = parsed_json.parse.text['*'];
 					
 					var item;
-					if (number == 1) {
+					if (number == 0) {
 						item = _this._tabbedContentView.addItem(number, name, str, true); 
 					} else {
 						item = _this._tabbedContentView.addItem(number, name, str, false); 
