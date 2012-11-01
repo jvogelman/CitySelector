@@ -10,8 +10,13 @@
       	#map_canvas { height: 100% }
       	#wikipedia {
 			height: 100%;
-			overflow: scroll
+			overflow: scroll;
+			padding: 5px;
 	  	}
+	  	#cityName {
+	  		padding: 10px;
+	  	}
+	  		  	
     </style>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript"
@@ -78,7 +83,7 @@
             }
 
             wikipediaView.tryPage(options, 0);
-            	
+            
 
         } else {
         	
@@ -140,7 +145,7 @@
 		});
 
 
-		wikipediaView = new WikipediaView($('#wikipedia'));
+		wikipediaView = new WikipediaView($('#wikipedia'), $('#cityName'));
 	}
     </script>
   </head>
@@ -151,7 +156,11 @@
   	<span class='span6'><div id='wikipedia'>def</div></span>
   	</div>-->
   	
-    <table style='width:100%;height:100%'><tr>
+    <table style='width:100%;height:100%'>
+    <tr style='height:10%'>
+    	<td><h1><em><span id='cityName'></span></em></h1></td>
+    </tr>
+    <tr style='height:90%'>
     <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas" style=" height:100%"></div></td>
 
 	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" style="height:100%"></div></td>

@@ -1,7 +1,8 @@
-function WikipediaView(element) {
+function WikipediaView(element, cityNameElement) {
 	
 	var _this = this;
 	this._tabbedContentView = new TabbedContentView(element);
+	this._cityNameElement = cityNameElement;
 	
 	this.tryPage = function(options, i) {
 	        var pageName = options[i];
@@ -15,6 +16,7 @@ function WikipediaView(element) {
 				if (_this.entryFound(textVal)) {			  	  		  	
 	  	  			// inspect here if page was found or not
 					_this.displayPage(pageName);
+					$(_this._cityNameElement).html(pageName.replace('_', ' '));
 	  	  			return true;
 				} else {
 					i++;
@@ -79,6 +81,7 @@ function WikipediaView(element) {
 				{page:pageName, prop:"text", redirects:"true", section:number},
 				function(parsed_json) {
 					var str = parsed_json.parse.text['*'];
+					//str = _this.removeReferences(str);
 					
 					var item;
 					if (number == 0) {
@@ -87,6 +90,8 @@ function WikipediaView(element) {
 						item = _this._tabbedContentView.addItem(number, name, str, false); 
 					}
 					//wikipediaView.appendItem(item);
+
+					$('strong:contains("Cite error")').remove();
 				}
 		);
 	}
@@ -108,6 +113,5 @@ function WikipediaView(element) {
 			return true;
 	    }
 	
-	   
 
 }
