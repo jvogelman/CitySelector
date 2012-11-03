@@ -2,30 +2,43 @@ function WikipediaView(element, cityNameElement) {
 	
 	var _this = this;
 	this._tabbedContentView = new TabbedContentView(element);
-	this._cityNameElement = cityNameElement;
+	this._cityNameElement = cityNameElement;        		
 	
-	this.tryPage = function(options, i) {
+	this.tryPage = function(options, i, successFunction) {
 	        var pageName = options[i];
 	        $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&format=json&callback=?", 
 			{page:pageName, prop:"text", redirects:"true"}, // #### redirects is a parameter that takes no value ?
 			function(parsed_json) {
 			  	var parse = parsed_json.parse;
-			  	var text = parse.text;
-	  	  		var textVal = parse.text['*'];
-	  	  		  	
-				if (_this.entryFound(textVal)) {			  	  		  	
-	  	  			// inspect here if page was found or not
-					_this.displayPage(pageName);
-					$(_this._cityNameElement).html(pageName.replace('_', ' '));
-	  	  			return true;
+			  	
+			  	if (parse) {
+				  	var text = parse.text;
+				  	if (text) {
+				  		
+				  		var textVal = parse.text['*'];
+		  	  		  	
+						if (_this.entryFound(textVal)) {			  	  		  	
+			  	  			// inspect here if page was found or not
+							_this.displayPage(pageName);
+							$(_this._cityNameElement).html(pageName.replace('_', ' '));
+							
+							if (successFunction != null) {
+								successFunction();
+							}
+			  	  			return;
+						}
+				  	}
+			  	}
+					
+				// not found
+				i++;
+				if (i in options) {
+					_this.tryPage(options, i);
 				} else {
-					i++;
-					if (i in options) {
-						_this.tryPage(options, i);
-					} else {
-						$(_this.el).html('I got nothin\'');
-					}
+					$(_this.el).html('I got nothin\'');
 				}
+			  	
+				return false;
 	  	  	});
 	
 		

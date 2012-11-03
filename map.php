@@ -20,21 +20,25 @@
     </style>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw&sensor=false">
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw&libraries=places&sensor=false">
     </script>
 	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/underscore.js"></script>
     <script type="text/javascript" src="../js/backbone.js"></script>
+    <script type="text/javascript" src="./util.js"></script>
     <script type="text/javascript" src="./tabbedContentView.js"></script>
     <script type="text/javascript" src="./wikipediaView.js"></script>
     <script type="text/javascript">
 
     var wikipediaView;
+    var map;
 
 	// trim spaces before and after a string
     String.prototype.trim = function() {
         return this.replace(/^\s+|\s+$/g, "");
     };
+
+ 	
         
 
 	function getAddressComponents(geocoderResults) {
@@ -60,7 +64,9 @@
 	//			or 'administrative area level 3, administrative area level 1'
 	//			or 'locality, administrative area level 1'
 	// foreign:
+	// could be: 'locality, country'
 	// could be: 'administrative area level 1, country'
+	// could be: 'administrative area level 2, country'
 	// sometimes just 'administrative area level 1'
 	// sometimes only country is available
     function showWikipedia(geocoderResults) {
@@ -86,12 +92,36 @@
             
 
         } else {
+        	var options = new Array();
+            var num=0;
+            if ('locality' in addrComp && 'country' in addrComp) {
+            	options[num] = addrComp['locality'] + ',_' + addrComp['country'];
+            	num++;
+            }
+            if ('administrative_area_level_2' in addrComp && 'country' in addrComp) {
+            	options[num] = addrComp['administrative_area_level_2'] + ',_' + addrComp['country'];
+            	num++;
+            }
+            if ('administrative_area_level_1' in addrComp && 'country' in addrComp) {
+            	options[num] = addrComp['administrative_area_level_1'] + ',_' + addrComp['country'];
+            	num++;
+            }
+            if ('administrative_area_level_1' in addrComp) {
+            	options[num] = addrComp['administrative_area_level_1'];
+            	num++;
+            }
+            if ('country' in addrComp) {
+            	options[num] = addrComp['country'];
+            	num++;
+            }
+            
+            wikipediaView.tryPage(options, 0);
         	
     	}
 			
     }
 
-  	    
+	    
     function initialize() {
 		var mapOptions = {
 	    	center: new google.maps.LatLng(37, -121),
@@ -99,12 +129,21 @@
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        disableDoubleClickZoom: true
 	    };
-	    var map = new google.maps.Map(document.getElementById("map_canvas"),
+	    map = new google.maps.Map(document.getElementById("map_canvas"),
 	    	mapOptions);
+
+
+	    var user_input = document.getElementById('location');
+
+	    var options = {
+	    	    bounds: new google.maps.LatLngBounds(),
+	    	    types: ['geocode']
+	    };
+	    var userAutocomplete = new google.maps.places.Autocomplete(user_input, options);
+    	
     	//var geocoder = new google.maps.Geocoder();
 	      
-    	//google.maps.event.addListener(map, 'mouseup', function(e) 	    	
-    	google.maps.event.clearListeners(map, 'dblclick');
+    	//google.maps.event.addListener(map, 'mouseup', function(e) 	    
 		google.maps.event.addListener(map, 'dblclick', function(e) {
     	    var center = map.getCenter();
     	    var lat = center.Xa;
@@ -145,6 +184,28 @@
 		});
 
 
+		$('#goButton').live('click', function(e) {
+			var location = $('#location').val();
+			var page = location.trim();
+			wikipediaView.tryPage([page], 0,
+				function(){
+					// page found! reposition the map and get the wikipedia page
+					
+					// get lat/lng for location so we can move the map			
+					var geocoder = new google.maps.Geocoder(); // for some reason, this needs to be constructed every time; otherwise, sometimes
+		    	    											// the map will not come up
+		    	    geocoder.geocode( { 'address': page}, function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							map.setCenter(results[0].geometry.location);
+					        
+					    } else {
+					        alert("Geocode was not successful for the following reason: " + status);
+					    }
+					});
+				}
+			);
+		});
+
 		wikipediaView = new WikipediaView($('#wikipedia'), $('#cityName'));
 	}
     </script>
@@ -156,10 +217,16 @@
   	<span class='span6'><div id='wikipedia'>def</div></span>
   	</div>-->
   	
+  	<div class='row-fluid' style='height:10%'>
+  	<h1><span class='span4 offset1'><em><span id='cityName'></span></em></span></h1>
+  	<span class='span4 offset3'>City or Zip Code: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
+  	</div>
     <table style='width:100%;height:100%'>
+    <!--  
     <tr style='height:10%'>
     	<td><h1><em><span id='cityName'></span></em></h1></td>
     </tr>
+    -->
     <tr style='height:90%'>
     <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas" style=" height:100%"></div></td>
 
