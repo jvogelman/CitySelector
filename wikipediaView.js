@@ -4,7 +4,7 @@ function WikipediaView(element, cityNameElement) {
 	this._tabbedContentView = new TabbedContentView(element);
 	this._cityNameElement = cityNameElement;        		
 	
-	this.tryPage = function(options, i, successFunction) {
+	this.tryPage = function(options, i, successFunction, errorFunction) {
 	        var pageName = options[i];
 	        $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&format=json&callback=?", 
 			{page:pageName, prop:"text", redirects:"true"}, // #### redirects is a parameter that takes no value ?
@@ -35,10 +35,12 @@ function WikipediaView(element, cityNameElement) {
 				if (i in options) {
 					_this.tryPage(options, i);
 				} else {
-					$(_this.el).html('I got nothin\'');
+					$(_this._tabbedContentView.el).html('I got nothin\'');
+					if (errorFunction != null) {
+						errorFunction();
+					}
 				}
 			  	
-				return false;
 	  	  	});
 	
 		

@@ -69,7 +69,7 @@
 	// could be: 'administrative area level 2, country'
 	// sometimes just 'administrative area level 1'
 	// sometimes only country is available
-    function showWikipedia(geocoderResults) {
+    function showWikipedia(latLng, geocoderResults) {
 
     	var addrComp = getAddressComponents(geocoderResults);
         if ('country' in addrComp && addrComp['country'] == 'United States') {
@@ -87,8 +87,6 @@
             	options[num] = addrComp['administrative_area_level_3'] + ',_' + addrComp['administrative_area_level_1'];
             	num++;
             }
-
-            wikipediaView.tryPage(options, 0);
             
 
         } else {
@@ -115,10 +113,20 @@
             	num++;
             }
             
-            wikipediaView.tryPage(options, 0);
         	
     	}
 			
+        wikipediaView.tryPage(options, 0, 
+        	// success function
+        	function (){
+        	 	var marker = new google.maps.Marker({
+	    	        map:map,
+	    	        draggable:true,
+	    	        animation: google.maps.Animation.DROP,
+	    	        position: latLng
+	    	      });           
+        	}
+        );
     }
 
 	    
@@ -157,7 +165,7 @@
     	    	// get all possible city,country or city,state combinations and try each at wikipedia until we get a match
     	    	//displayResults(results);
 
-    	    	showWikipedia(results);
+    	    	showWikipedia(e.latLng, results);
     	    });
 	
 		    	    
@@ -188,6 +196,7 @@
 			var location = $('#location').val();
 			var page = location.trim();
 			wikipediaView.tryPage([page], 0,
+				// success function
 				function(){
 					// page found! reposition the map and get the wikipedia page
 					
@@ -198,16 +207,38 @@
 						if (status == google.maps.GeocoderStatus.OK) {
 							map.setCenter(results[0].geometry.location);
 					        
+				    	    var marker = new google.maps.Marker({
+				    	        map:map,
+				    	        draggable:true,
+				    	        animation: google.maps.Animation.DROP,
+				    	        position: results[0].geometry.location
+				    	      });
+				    	      
 					    } else {
 					        alert("Geocode was not successful for the following reason: " + status);
 					    }
 					});
+				},
+				// error function
+				function() {
+					alert('nothing found');
 				}
 			);
 		});
 
 		wikipediaView = new WikipediaView($('#wikipedia'), $('#cityName'));
 	}
+
+
+    $(document).ready(function(){
+
+		$('#location').keypress( function(e) {
+	        if(e.which == 13) {	// enter button
+		        e.preventDefault();
+		        $('#goButton').click();
+	        }
+		});
+    });
     </script>
   </head>
   <body onload="initialize()">
@@ -219,7 +250,7 @@
   	
   	<div class='row-fluid' style='height:10%'>
   	<h1><span class='span4 offset1'><em><span id='cityName'></span></em></span></h1>
-  	<span class='span4 offset3'>City or Zip Code: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
+  	<span class='span4 offset3'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
   	</div>
     <table style='width:100%;height:100%'>
     <!--  
