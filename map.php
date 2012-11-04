@@ -225,12 +225,13 @@
 						if (status == google.maps.GeocoderStatus.OK) {
 							map.setCenter(results[0].geometry.location);
 					        
-				    	    var marker = new google.maps.Marker({
+				    	    /*var marker = new google.maps.Marker({
 				    	        map:map,
 				    	        draggable:true,
 				    	        animation: google.maps.Animation.DROP,
 				    	        position: results[0].geometry.location
-				    	      });
+				    	      });*/
+							var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);    
 				    	      
 					    } else {
 					        alert("Geocode was not successful for the following reason: " + status);
