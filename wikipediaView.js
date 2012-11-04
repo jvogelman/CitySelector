@@ -96,7 +96,8 @@ function WikipediaView(element, cityNameElement) {
 				{page:pageName, prop:"text", redirects:"true", section:number},
 				function(parsed_json) {
 					var str = parsed_json.parse.text['*'];
-					//str = _this.removeReferences(str);
+					
+					str = _this.removeStr(str, '[edit]');
 					
 					var item;
 					if (number == 0) {
@@ -122,11 +123,59 @@ function WikipediaView(element, cityNameElement) {
 			var middle = text.substring(4, len - 4);
 			if (middle.indexOf('-->') == -1) {
 					return false; 
+			}
+		}
+	
+		return true;
+	}
+	
+	// remove the passed string 
+	this.removeStr = function(str, searchStr) {
+		var returnStr = '';
+		var searchIndex = 0;
+		var foundStr = '';
+		
+		for (var index = 0; index < str.length; index++) {
+			var char = str[index];
+			
+			while (char == '<' || char == searchStr[searchIndex]) {
+				if (char == '<') {
+					// add the entire tag to returnStr
+					while (char != '>') {
+						returnStr += char;
+						index++;
+						char = str[index];
+					} 
+					returnStr += '>';
+					index++;
+					char = str[index];
+				} else {
+					foundStr += char;
+					if (foundStr == searchStr) {
+						foundStr = '';
+						searchIndex = 0;
+						index++;
+						char = str[index];
+						continue;
+					}
+					index++;
+					char = str[index];
+					searchIndex++;
 				}
 			}
-	
-			return true;
-	    }
-	
-
+			
+			if (foundStr != '') {
+				returnStr += foundStr;
+				foundStr = '';
+				searchIndex = 0;
+			}
+			
+			returnStr += char;
+		}
+		
+		return returnStr;
+	}
 }
+
+
+

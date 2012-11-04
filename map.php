@@ -7,7 +7,11 @@
     <style type="text/css">
       	html { height: 100% }
       	body { height: 100%; margin: 0; padding: 0 }
-      	#map_canvas { height: 100% }
+      	#map_canvas { 
+      		height: 100% ;
+      		border-width: 3px;
+      		border-style: solid;
+      	}
       	#wikipedia {
 			height: 100%;
 			overflow: scroll;
@@ -25,7 +29,6 @@
 	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/underscore.js"></script>
     <script type="text/javascript" src="../js/backbone.js"></script>
-    <script type="text/javascript" src="./util.js"></script>
     <script type="text/javascript" src="./tabbedContentView.js"></script>
     <script type="text/javascript" src="./wikipediaView.js"></script>
     <script type="text/javascript">
@@ -38,9 +41,8 @@
         return this.replace(/^\s+|\s+$/g, "");
     };
 
- 	
-        
-
+ 	       
+	// build up a named array of locations based on the results of the geocoder
 	function getAddressComponents(geocoderResults) {
 		var addrComp = new Array();
 		for (var i = 0; i < geocoderResults.length; i++) {
@@ -59,19 +61,13 @@
     }
     	
 
-	// Try the following:
-	// in U.S.: 'administrative area level 2, administrative area level 1'
-	//			or 'administrative area level 3, administrative area level 1'
-	//			or 'locality, administrative area level 1'
-	// foreign:
-	// could be: 'locality, country'
-	// could be: 'administrative area level 1, country'
-	// could be: 'administrative area level 2, country'
-	// sometimes just 'administrative area level 1'
-	// sometimes only country is available
+	// Try showing a wikipedia page based on the results of the geocoder: try different possibilities
     function showWikipedia(latLng, geocoderResults) {
 
+		// get all of the different areas indicated by the geocoder results (i.e. 'country', 'locality', etc)
     	var addrComp = getAddressComponents(geocoderResults);
+
+    	// build an array of possible pages to search for in wikipedia
         if ('country' in addrComp && addrComp['country'] == 'United States') {
         	var options = new Array();
             var num=0;
@@ -112,10 +108,11 @@
             	options[num] = addrComp['country'];
             	num++;
             }
-            
         	
     	}
-			
+
+		// using the array we built, start by searching for the first possible page and continue until we find one
+		// or until we run out of page names
         wikipediaView.tryPage(options, 0, 
         	// success function
         	function (){
@@ -130,7 +127,10 @@
     }
 
 	    
-    function initialize() {
+    $(document).ready(function(){
+    
+
+        // construct map
 		var mapOptions = {
 	    	center: new google.maps.LatLng(37, -121),
 	        zoom: 8,
@@ -140,18 +140,16 @@
 	    map = new google.maps.Map(document.getElementById("map_canvas"),
 	    	mapOptions);
 
-
+		// input search box will allow auto-completion for city names
 	    var user_input = document.getElementById('location');
 
 	    var options = {
 	    	    bounds: new google.maps.LatLngBounds(),
-	    	    types: ['geocode']
+	    	    types: ['(cities)']
 	    };
 	    var userAutocomplete = new google.maps.places.Autocomplete(user_input, options);
-    	
-    	//var geocoder = new google.maps.Geocoder();
-	      
-    	//google.maps.event.addListener(map, 'mouseup', function(e) 	    
+
+	    // when we double click on a city, show the corresponding wikipedia page
 		google.maps.event.addListener(map, 'dblclick', function(e) {
     	    var center = map.getCenter();
     	    var lat = center.Xa;
@@ -191,7 +189,7 @@
 			return false;
 		});
 
-
+		// when the "Go" button is clicked, look for the wikipedia page and if found, move the map to the new location
 		$('#goButton').live('click', function(e) {
 			var location = $('#location').val();
 			var page = location.trim();
@@ -221,17 +219,13 @@
 				},
 				// error function
 				function() {
-					alert('nothing found');
+					alert('I\'m sorry. Looks like wikipedia doesn\'t have an entry for ' + page);
 				}
 			);
 		});
 
 		wikipediaView = new WikipediaView($('#wikipedia'), $('#cityName'));
-	}
-
-
-    $(document).ready(function(){
-
+    
 		$('#location').keypress( function(e) {
 	        if(e.which == 13) {	// enter button
 		        e.preventDefault();
@@ -241,23 +235,12 @@
     });
     </script>
   </head>
-  <body onload="initialize()">
-  	<!--  
-  	<div class='row-fluid' style='border-width:1px;border-style:solid;height:100%;background-color:red'>
-  	<span class='span6'><div id='map_canvas'>abc</div></span>
-  	<span class='span6'><div id='wikipedia'>def</div></span>
-  	</div>-->
-  	
+  <body>
   	<div class='row-fluid' style='height:10%'>
   	<h1><span class='span4 offset1'><em><span id='cityName'></span></em></span></h1>
   	<span class='span4 offset3'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
   	</div>
     <table style='width:100%;height:100%'>
-    <!--  
-    <tr style='height:10%'>
-    	<td><h1><em><span id='cityName'></span></em></h1></td>
-    </tr>
-    -->
     <tr style='height:90%'>
     <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas" style=" height:100%"></div></td>
 
