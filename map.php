@@ -41,6 +41,23 @@
         return this.replace(/^\s+|\s+$/g, "");
     };
 
+    function MapMarker(wikiPageName, latLng) {
+    	this._marker = new google.maps.Marker({
+	        map:map,
+	        draggable:true,
+	        animation: google.maps.Animation.DROP,
+	        position: latLng
+	      });   
+		this._wikiPageName = wikiPageName;
+		var _this = this;
+
+		google.maps.event.addListener(this._marker, 'click', 
+			function() {
+				wikipediaView.tryPage([_this._wikiPageName], 0);
+			}
+		);
+    }
+
  	       
 	// build up a named array of locations based on the results of the geocoder
 	function getAddressComponents(geocoderResults) {
@@ -116,12 +133,15 @@
         wikipediaView.tryPage(options, 0, 
         	// success function
         	function (){
-        	 	var marker = new google.maps.Marker({
+        	 	/*var marker = new google.maps.Marker({
 	    	        map:map,
 	    	        draggable:true,
 	    	        animation: google.maps.Animation.DROP,
 	    	        position: latLng
-	    	      });           
+	    	      });  */
+  	      		var marker = new MapMarker(wikipediaView._pageName, latLng);         
+
+		    	
         	}
         );
     }

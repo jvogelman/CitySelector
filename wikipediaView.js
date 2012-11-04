@@ -3,9 +3,12 @@ function WikipediaView(element, cityNameElement) {
 	var _this = this;
 	this._tabbedContentView = new TabbedContentView(element);
 	this._cityNameElement = cityNameElement;        		
+	this._pageName = '';
 	
 	this.tryPage = function(options, i, successFunction, errorFunction) {
 	        var pageName = options[i];
+	        _this._pageName = '';
+	        
 	        $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&format=json&callback=?", 
 			{page:pageName, prop:"text", redirects:"true"}, // #### redirects is a parameter that takes no value ?
 			function(parsed_json) {
@@ -21,6 +24,7 @@ function WikipediaView(element, cityNameElement) {
 			  	  			// inspect here if page was found or not
 							_this.displayPage(pageName);
 							$(_this._cityNameElement).html(pageName.replace('_', ' '));
+							_this._pageName = pageName;
 							
 							if (successFunction != null) {
 								successFunction();
@@ -135,6 +139,8 @@ function WikipediaView(element, cityNameElement) {
 		var searchIndex = 0;
 		var foundStr = '';
 		
+		// go through the string character by character: ignore html tags and locate the characters in searchStr
+		// build up returnStr to include everything but any instances of searchStr
 		for (var index = 0; index < str.length; index++) {
 			var char = str[index];
 			
@@ -150,8 +156,10 @@ function WikipediaView(element, cityNameElement) {
 					index++;
 					char = str[index];
 				} else {
+					// looks like we might be finding the searchStr
 					foundStr += char;
 					if (foundStr == searchStr) {
+						// we found it!
 						foundStr = '';
 						searchIndex = 0;
 						index++;
@@ -165,6 +173,7 @@ function WikipediaView(element, cityNameElement) {
 			}
 			
 			if (foundStr != '') {
+				// we thought we were finding searchStr, but it turned out it wasn't it
 				returnStr += foundStr;
 				foundStr = '';
 				searchIndex = 0;
