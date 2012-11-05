@@ -109,11 +109,11 @@
 	    	}, this);
 	    },
 	    
-	    addItem: function(index, name, html, active){
+	    addItem: function(name, html, active){
 	        this.counter++;
 	        var item = new Tab();
 	        item.set({
-	        	index: index,
+	        	index: this.counter,
 	        	name: name,
 	        	html: html
 	        });
@@ -145,6 +145,10 @@
 	    clearItems: function(){
 	    	this.collection.reset();
 	        this.render();
+	    },
+	    
+	    numItems: function() {
+	    	return this.collection.length;
 	    }
 	});
 

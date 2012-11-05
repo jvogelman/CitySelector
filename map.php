@@ -22,6 +22,12 @@
 	  	}
 	  		  	
     </style>
+    
+    <script type="text/javascript">
+		var googleKey = 'AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw';
+		var customSearchEngineIdentifier = '002564124849599434674:zamvpdxusfu';
+    </script>
+    
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw&libraries=places&sensor=false">
@@ -31,6 +37,7 @@
     <script type="text/javascript" src="../js/backbone.js"></script>
     <script type="text/javascript" src="./tabbedContentView.js"></script>
     <script type="text/javascript" src="./wikipediaView.js"></script>
+    <script type="text/javascript" src="./imagesPage.js"></script>
     <script type="text/javascript">
 
     var wikipediaView;
@@ -133,15 +140,15 @@
         wikipediaView.tryPage(options, 0, 
         	// success function
         	function (){
-        	 	/*var marker = new google.maps.Marker({
-	    	        map:map,
-	    	        draggable:true,
-	    	        animation: google.maps.Animation.DROP,
-	    	        position: latLng
-	    	      });  */
-  	      		var marker = new MapMarker(wikipediaView._pageName, latLng);         
+        	 	var marker = new MapMarker(wikipediaView._pageName, latLng);  
+        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+        	 	//wikipediaView.addTab('Images', imagesPage.search(wikipediaView._pageName), true);
 
-		    	
+        	 	imagesPage.search(wikipediaView._pageName,
+                	function(html) {
+        	 			wikipediaView.addTab('Images', html, true);
+        	 		}
+    	 		);
         	}
         );
     }
@@ -225,13 +232,7 @@
 						if (status == google.maps.GeocoderStatus.OK) {
 							map.setCenter(results[0].geometry.location);
 					        
-				    	    /*var marker = new google.maps.Marker({
-				    	        map:map,
-				    	        draggable:true,
-				    	        animation: google.maps.Animation.DROP,
-				    	        position: results[0].geometry.location
-				    	      });*/
-							var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);    
+				    	    var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);    
 				    	      
 					    } else {
 					        alert("Geocode was not successful for the following reason: " + status);

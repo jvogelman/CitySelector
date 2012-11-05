@@ -9,6 +9,10 @@ function WikipediaView(element, cityNameElement) {
 	        var pageName = options[i];
 	        _this._pageName = '';
 	        
+
+			// clear wikipedia tabs and content
+			_this._tabbedContentView.clearItems();
+	        
 	        $.getJSON("http://en.wikipedia.org/w/api.php?action=parse&format=json&callback=?", 
 			{page:pageName, prop:"text", redirects:"true"}, // #### redirects is a parameter that takes no value ?
 			function(parsed_json) {
@@ -72,8 +76,6 @@ function WikipediaView(element, cityNameElement) {
 				function(parsed_json) {
 					var sections = parsed_json.parse.sections;
 	
-					// clear wikipedia tabs and content
-					_this._tabbedContentView.clearItems();
 					
 	    			for (var i = 0; i < sections.length; i++) {
 						var name = sections[i].line;
@@ -87,14 +89,14 @@ function WikipediaView(element, cityNameElement) {
 	
 						// if it's level 2, let's devote a tab to it
 						if (level == 2) {
-							_this.addTab(pageName, name, index);
+							_this.addWikipediaTab(pageName, name, index);
 							
 						}
 	    			}
 		  	});
 	}
 	
-	this.addTab = function(pageName, name, number) {
+	this.addWikipediaTab = function(pageName, name, number) {
 		
 		$.getJSON("http://en.wikipedia.org/w/api.php?action=parse&format=json&callback=?", 
 				{page:pageName, prop:"text", redirects:"true", section:number},
@@ -105,15 +107,24 @@ function WikipediaView(element, cityNameElement) {
 					
 					var item;
 					if (number == 0) {
-						item = _this._tabbedContentView.addItem(number, name, str, true); 
+						item = _this._tabbedContentView.addItem(name, str, true); 
 					} else {
-						item = _this._tabbedContentView.addItem(number, name, str, false); 
+						item = _this._tabbedContentView.addItem(name, str, false); 
 					}
 					//wikipediaView.appendItem(item);
 
 					$('strong:contains("Cite error")').remove();
 				}
 		);
+	}
+	
+	this.addTab = function(name, html, active) {
+		_this._tabbedContentView.addItem(name, html, active); 
+		
+	}
+	
+	this.numTabs = function() {
+		return this._tabbedContentView.numItems();
 	}
 	
 	
