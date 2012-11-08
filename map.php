@@ -60,7 +60,16 @@
 
 		google.maps.event.addListener(this._marker, 'click', 
 			function() {
-				wikipediaView.tryPage([_this._wikiPageName], 0);
+				wikipediaView.tryPage([_this._wikiPageName], 0, 
+					function() { 
+		        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+		        	 	imagesPage.search(wikipediaView._pageName,
+		                	function(html) {
+		        	 			wikipediaView.addTab('Images', html, true);
+		        	 		}
+	        	 		);
+					}
+		    	);
 			}
 		);
     }
@@ -142,8 +151,6 @@
         	function (){
         	 	var marker = new MapMarker(wikipediaView._pageName, latLng);  
         	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
-        	 	//wikipediaView.addTab('Images', imagesPage.search(wikipediaView._pageName), true);
-
         	 	imagesPage.search(wikipediaView._pageName,
                 	function(html) {
         	 			wikipediaView.addTab('Images', html, true);
@@ -155,7 +162,6 @@
 
 	    
     $(document).ready(function(){
-    
 
         // construct map
 		var mapOptions = {
@@ -232,7 +238,13 @@
 						if (status == google.maps.GeocoderStatus.OK) {
 							map.setCenter(results[0].geometry.location);
 					        
-				    	    var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);    
+				    	    var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);      
+			        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+			        	 	imagesPage.search(wikipediaView._pageName,
+			                	function(html) {
+			        	 			wikipediaView.addTab('Images', html, true);
+			        	 		}
+			    	 		);
 				    	      
 					    } else {
 					        alert("Geocode was not successful for the following reason: " + status);
@@ -262,7 +274,7 @@
   	<h1><span class='span4 offset1'><em><span id='cityName'></span></em></span></h1>
   	<span class='span4 offset3'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
   	</div>
-    <table style='width:100%;height:100%'>
+    <table style='width:100%;height:90%'>
     <tr style='height:90%'>
     <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas" style=" height:100%"></div></td>
 

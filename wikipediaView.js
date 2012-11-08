@@ -41,7 +41,7 @@ function WikipediaView(element, cityNameElement) {
 				// not found
 				i++;
 				if (i in options) {
-					_this.tryPage(options, i);
+					_this.tryPage(options, i, successFunction, errorFunction);
 				} else {
 					$(_this._tabbedContentView.el).html('I got nothin\'');
 					if (errorFunction != null) {

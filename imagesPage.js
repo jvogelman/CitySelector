@@ -1,8 +1,18 @@
+
+function imageError(img) {
+	$(img).remove();
+}
+
 function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 
 	var _this = this;
 	
 	this._html = '';
+	
+	this.imageError = function() {
+		alert('got here');
+		
+	}
 	
 	this.search = function(searchStr, successFunction) {
 		
@@ -11,7 +21,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		var imagePadding = 8;
 		
 		var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
-			searchStr + '&searchType=image&count=' + numImages;
+			searchStr + '&searchType=image&count=' + numImages + '&imgType=photo';
 		$.getJSON(url, {},
 			function(result) {
 				var returnStr = '<table><tr>';
@@ -30,7 +40,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 						currWidth += newWidth + imagePadding;
 					}
 						
-					returnStr += '<td style="padding:' + imagePadding + 'px"><img src="' + result.items[i].link + '" height="' + imageHeight + '"/></td>';
+					returnStr += '<img class="googleImage" onerror="imageError(this)" src="' + result.items[i].link + '" height="' + imageHeight + 
+						' " width="' + newWidth + '" style="padding:' + imagePadding + 'px"/>';
 					
 				}
 				
