@@ -222,10 +222,42 @@
 			return false;
 		});
 
+		function fixCase(cityName) {
+			// in case user didn't enter city name in correct case, fix it
+			// each first letter should be upper case, and each successive letter should be lower case
+
+			var finalName = cityName.substr(0, 1).toUpperCase();
+			cityName = cityName.substr(1);
+			
+			// locate the spaces
+			var space;
+			while ((space = cityName.indexOf(' ')) != -1) {
+				// all but the first letter of the current word
+				finalName += cityName.substr(0, space + 1).toLowerCase();
+				cityName = cityName.substr(space + 1);
+
+				// first letter of next word
+				finalName += cityName.substr(0, 1).toUpperCase();
+				cityName = cityName.substr(1);
+			}
+
+			// add the rest of the string
+			if (cityName != '') {
+				finalName += cityName.toLowerCase();
+			}
+			
+			return finalName;
+		}
+
 		// when the "Go" button is clicked, look for the wikipedia page and if found, move the map to the new location
 		$('#goButton').live('click', function(e) {
 			var location = $('#location').val();
 			var page = location.trim();
+
+			// each first letter should be upper case, and each successive letter should be lower case (wikipedia won't find page
+			// otherwise ))
+			page = fixCase(page);
+			
 			wikipediaView.tryPage([page], 0,
 				// success function
 				function(){
@@ -271,8 +303,8 @@
   </head>
   <body>
   	<div class='row-fluid' style='height:10%'>
-  	<h1><span class='span4 offset1'><em><span id='cityName'></span></em></span></h1>
-  	<span class='span4 offset3'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
+  	<h1><span class='span6 offset1'><em><span id='cityName'></span></em></span></h1>
+  	<span class='span4 offset1'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
   	</div>
     <table style='width:100%;height:90%'>
     <tr style='height:90%'>
