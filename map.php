@@ -62,7 +62,8 @@
 			function() {
 				wikipediaView.tryPage([_this._wikiPageName], 0, 
 					function() { 
-		        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+						var width = $('#wikipedia').width();
+						var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, width);  
 		        	 	imagesPage.search(wikipediaView._pageName,
 		                	function(html) {
 		        	 			wikipediaView.addTab('Images', html, true);
@@ -150,7 +151,8 @@
         	// success function
         	function (){
         	 	var marker = new MapMarker(wikipediaView._pageName, latLng);  
-        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+        	 	var width = $('#wikipedia').width();
+				var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, width); 
         	 	imagesPage.search(wikipediaView._pageName,
                 	function(html) {
         	 			wikipediaView.addTab('Images', html, true);
@@ -257,6 +259,11 @@
 			// each first letter should be upper case, and each successive letter should be lower case (wikipedia won't find page
 			// otherwise ))
 			page = fixCase(page);
+			// replace spaces with commas
+			var space;
+			while ((space = page.indexOf(' ')) != -1) {
+				page = page.replace(' ', '_');
+			}
 			
 			wikipediaView.tryPage([page], 0,
 				// success function
@@ -271,7 +278,8 @@
 							map.setCenter(results[0].geometry.location);
 					        
 				    	    var marker = new MapMarker(wikipediaView._pageName, results[0].geometry.location);      
-			        	 	var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, parseInt($('#wikipedia').css('width'),10));  
+				    	    var width = $('#wikipedia').width();
+							var imagesPage = new ImagesPage(googleKey, customSearchEngineIdentifier, width);     
 			        	 	imagesPage.search(wikipediaView._pageName,
 			                	function(html) {
 			        	 			wikipediaView.addTab('Images', html, true);
