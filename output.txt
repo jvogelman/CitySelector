@@ -1,0 +1,101 @@
+opened file\nreading file
+found state Alabama and acronym AL
+reading file
+found state Alaska and acronym AK
+reading file
+found state Arizona and acronym AZ
+reading file
+found state Arkansas and acronym AR
+reading file
+found state California and acronym CA
+reading file
+found state Colorado and acronym CO
+reading file
+found state Connecticut and acronym CT
+reading file
+found state Delaware and acronym DE
+reading file
+found state Florida and acronym FL
+reading file
+found state Georgia and acronym GA
+reading file
+found state Hawaii and acronym HI
+reading file
+found state Idaho and acronym ID
+reading file
+found state Illinois and acronym IL
+reading file
+found state Indiana and acronym IN
+reading file
+found state Iowa and acronym IA
+reading file
+found state Kansas and acronym KS
+reading file
+found state Kentucky and acronym KY
+reading file
+found state Louisiana and acronym LA
+reading file
+found state Maine and acronym ME
+reading file
+found state Maryland and acronym MD
+reading file
+found state Massachusetts and acronym MA
+reading file
+found state Michigan and acronym MI
+reading file
+found state Minnesota and acronym MN
+reading file
+found state Mississippi and acronym MS
+reading file
+found state Missouri and acronym MO
+reading file
+found state Montana and acronym MT
+reading file
+found state Nebraska and acronym NE
+reading file
+found state Nevada and acronym NV
+reading file
+found state New Hampshire and acronym NH
+reading file
+found state New Jersey and acronym NJ
+reading file
+found state New Mexico and acronym NM
+reading file
+found state New York and acronym NY
+reading file
+found state North Carolina and acronym NC
+reading file
+found state North Dakota and acronym ND
+reading file
+found state Ohio and acronym OH
+reading file
+found state Oklahoma and acronym OK
+reading file
+found state Oregon and acronym OR
+reading file
+found state Pennsylvania and acronym PA
+reading file
+found state Rhode Island and acronym RI
+reading file
+found state South Carolina and acronym SC
+reading file
+found state South Dakota and acronym SD
+reading file
+found state Tennessee and acronym TN
+reading file
+found state Texas and acronym TX
+reading file
+found state Utah and acronym UT
+reading file
+found state Vermont and acronym VT
+reading file
+found state Virginia and acronym VA
+reading file
+found state Washington and acronym WA
+reading file
+found state West Virginia and acronym WV
+reading file
+found state Wisconsin and acronym WI
+reading file
+found state Wyoming and acronym WY
+reading file

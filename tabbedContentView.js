@@ -84,8 +84,7 @@
 	
 		
 	var TabbedContentView = Backbone.View.extend({
-		//el: $('#wikipedia'), // el attaches to existing element
-	    events: {
+		events: {
 	      
 	    },
 	
@@ -103,7 +102,8 @@
 	
 	    render: function(){
 	    	var self = this;
-	    	$(this.el).html('<ul class="nav nav-tabs" data-tabs="tabs"></ul><div class="tab-content"></div>');
+	    	//$(this.el).html('<ul class="nav nav-tabs" data-tabs="tabs"></ul><div class="tab-content"></div>');
+	    	$(this.el).html('<ul class="nav nav-pills"></ul><div class="tab-content"></div>');
 	    	_(this.collection.models).each(function(item){ // in case collection is not empty
 	    		self.appendItem(item);
 	    	}, this);

@@ -42,6 +42,7 @@
 
     var wikipediaView;
     var map;
+    var stateAcronyms;
 
 	// trim spaces before and after a string
     String.prototype.trim = function() {
@@ -164,6 +165,20 @@
 
 	    
     $(document).ready(function(){
+
+        // get state acronyms from server
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            data: {},
+            url: 'stateAcronyms.php',
+            success: function(data) {
+                stateAcronyms = data;
+            },
+            error: function(data) {
+                alert('Darn: couldn\'t get list of state acronyms');
+            }
+        });
 
         // construct map
 		var mapOptions = {
