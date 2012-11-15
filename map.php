@@ -32,12 +32,14 @@
     <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw&libraries=places&sensor=false">
     </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>		<!-- Google Loader -->
 	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../js/underscore.js"></script>
     <script type="text/javascript" src="../js/backbone.js"></script>
     <script type="text/javascript" src="./tabbedContentView.js"></script>
     <script type="text/javascript" src="./wikipediaView.js"></script>
     <script type="text/javascript" src="./imagesPage.js"></script>
+	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
     <script type="text/javascript">
 
     var wikipediaView;
@@ -58,6 +60,10 @@
 	      });   
 		this._wikiPageName = wikiPageName;
 		var _this = this;
+
+		var temp = latLng.lat();
+		$.cookie('latitude', latLng.lat());
+		$.cookie('longitude', latLng.lng());
 
 		google.maps.event.addListener(this._marker, 'click', 
 			function() {
@@ -162,7 +168,6 @@
         	}
         );
     }
-
 	    
     $(document).ready(function(){
 
@@ -180,9 +185,18 @@
             }
         });
 
+        var lat, lng;
+        if ($.cookie('latitude') != null && $.cookie('longitude') != null) {
+            lat = $.cookie('latitude');
+            lng = $.cookie('longitude');
+        } else {
+            lat = 37;
+            lng = -121;
+        }
+
         // construct map
 		var mapOptions = {
-	    	center: new google.maps.LatLng(37, -121),
+	    	center: new google.maps.LatLng(lat, lng),
 	        zoom: 8,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        disableDoubleClickZoom: true
@@ -202,9 +216,9 @@
 	    // when we double click on a city, show the corresponding wikipedia page
 		google.maps.event.addListener(map, 'dblclick', function(e) {
     	    var center = map.getCenter();
-    	    var lat = center.Xa;
-    	    var lng = center.Ya;
-    	    var str = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&sensor=false';
+    	    var lat = center.lat();
+    	    var lng = center.lng();
+    	    //var str = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng + '&sensor=false';
 
     	    var geocoder = new google.maps.Geocoder(); // for some reason, this needs to be constructed every time; otherwise, sometimes
     	    											// the map will not come up
