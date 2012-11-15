@@ -271,6 +271,15 @@
 			var location = $('#location').val();
 			var page = location.trim();
 
+			// if user specifies state name by acronym, convert to full state name
+			var comma;
+			if ((comma = page.indexOf(',')) != -1) {
+				var stateOrCountry = page.substr(comma + 1).trim().toUpperCase();
+				if (stateOrCountry.length == 2 && stateAcronyms[stateOrCountry] != undefined) {
+					page = page.substr(0, comma + 1) + ' ' + stateAcronyms[stateOrCountry];
+				}	
+			}
+
 			// each first letter should be upper case, and each successive letter should be lower case (wikipedia won't find page
 			// otherwise ))
 			page = fixCase(page);
@@ -278,7 +287,7 @@
 			var space;
 			while ((space = page.indexOf(' ')) != -1) {
 				page = page.replace(' ', '_');
-			}
+			}			
 			
 			wikipediaView.tryPage([page], 0,
 				// success function
