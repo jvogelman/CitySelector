@@ -119,8 +119,7 @@ function WikipediaView(element, cityNameElement) {
 	}
 	
 	this.addTab = function(name, html, active) {
-		_this._tabbedContentView.addItem(name, html, active); 
-		
+		_this._tabbedContentView.addItem(name, html, active);		
 	}
 	
 	this.numTabs = function() {

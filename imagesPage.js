@@ -1,6 +1,10 @@
 
-function imageError(img) {
+function imageError(img, displayFunction) {
 	$(img).remove();
+	
+	//if (displayFunction != null) {
+	//	displayFunction("just a test");
+	//}
 }
 
 function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
@@ -11,7 +15,12 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	
 	elementWidth -= 20;	// #### I couldn't figure out why it was necessary to add this...
 	
-	this.search = function(searchStr, successFunction) {
+	this.displayImages = function(items) {
+		
+		
+	}
+	
+	this.search = function(searchStr, displayFunction) {
 		
 		var numImages = 20;
 		var imageHeight = 150;
@@ -22,6 +31,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		$.getJSON(url, {},
 			function(result) {
 				var returnStr = '';
+				//_this.displayImages(result.items);
 				numImg = result.items.length;
 				
 				// for each row, get the total width occupied by images
@@ -62,7 +72,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 					// what is the width of the margin in this row?
 					var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 						
-					returnStr += '<img class="googleImage" onerror="imageError(this)" src="' + result.items[i].link + '" height="' + imageHeight + 
+					returnStr += '<img class="googleImage" onerror="imageError(this, ' + displayFunction + ')" src="' + result.items[i].link + '" height="' + imageHeight + 
 					' " width="' + newWidth + '" style="margin-left:' + marginWidth + 'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>';
 				
 					imagesThisRow++;
@@ -76,8 +86,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 				
 				this._html = returnStr;
 				
-				if (successFunction != null) {
-					successFunction(this._html);
+				if (displayFunction != null) {
+					displayFunction(this._html);
 				}
 			}
 		);

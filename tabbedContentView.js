@@ -7,7 +7,9 @@
 		defaults: {
 			index: -1,
 			name: '',
-			html: ''
+			html: '',
+			tabView: null,
+			tabContentView: null
 	    }
 	});
 	  
@@ -93,7 +95,7 @@
 	    	_.bindAll(this, 'render', 'addItem', 'appendItem'); // every function that uses 'this' as the current object should be in here
 	        
 	        this.collection = new TabCollection();
-	        this.collection.bind('add', this.appendItem); // collection event binder
+	        //this.collection.bind('add', this.appendItem); // collection event binder
 
 	        this.counter = 0;
 	        this.render();
@@ -112,15 +114,33 @@
 	    addItem: function(name, html, active){
 	        this.counter++;
 	        var item = new Tab();
+	        item.id = name;
 	        item.set({
 	        	index: this.counter,
 	        	name: name,
 	        	html: html
 	        });
-	        //this.collection.add(item, active); #### change back to this? can't have second parameter
+	        this.collection.add(item);
 	        this.appendItem(item, active);
 	        return item;
 	    },
+	    
+	    /*setItem: function(name, html, active) {
+	    	// see if we've already gotten a tab with this name before
+	    	var item = this.collection.get(name);
+	    	if (item != undefined && item != null) {
+	    		// we already have this, so update it
+	    		var tabView = item.get('tabView');
+	    		var tabContentView = item.get('tabContentView');
+	    		item.set({
+	    			html: html
+	    		});
+	    		//tabContentView.active = active; #### worry about this next
+	    		tabContentView.render();
+	    	} else {
+	    		this.addItem(name, html, active);
+	    	}
+	    },*/
 	    
 	    appendItem: function(item, active){
 	    	var tabView = new TabView({
@@ -130,14 +150,16 @@
 	    		model: item
 	    	});
 	    	
+	    	item.set({
+	    		tabView: tabView,
+	    		tabContentView: tabContentView
+	    	});
+	    	
 	    	tabView.active = active;
 	    	tabContentView.active = active;
-	    	
-	    	var temp = $('#wikipedia');
 
-			//$('#wikipedia .nav').append('<li><a data-toggle="tab" href="#Section1">blah</a></li>');
-	    	var el = tabView.render().el;
-	    	//$('#wikipedia .nav').append(tabView.render().el.innerHTML);
+			var el = tabView.render().el;
+	    	
 	    	$('.nav', this.el).append(tabView.render().el.innerHTML);
 	    	$('.tab-content', this.el).append(tabContentView.render().el.innerHTML);
 	    },

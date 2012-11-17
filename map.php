@@ -34,8 +34,8 @@
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>		<!-- Google Loader -->
 	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/underscore.js"></script>
-    <script type="text/javascript" src="../js/backbone.js"></script>
+    <script type="text/javascript" src="../js/underscore-min.js"></script>
+    <script type="text/javascript" src="../js/backbone-min.js"></script>
     <script type="text/javascript" src="./tabbedContentView.js"></script>
     <script type="text/javascript" src="./wikipediaView.js"></script>
     <script type="text/javascript" src="./imagesPage.js"></script>
@@ -54,14 +54,13 @@
     function MapMarker(wikiPageName, latLng) {
     	this._marker = new google.maps.Marker({
 	        map:map,
-	        draggable:true,
+	        draggable:false,
 	        animation: google.maps.Animation.DROP,
 	        position: latLng
 	      });   
 		this._wikiPageName = wikiPageName;
 		var _this = this;
 
-		var temp = latLng.lat();
 		$.cookie('latitude', latLng.lat());
 		$.cookie('longitude', latLng.lng());
 
