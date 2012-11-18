@@ -226,8 +226,8 @@
             lat = $.cookie('latitude');
             lng = $.cookie('longitude');
         } else {
-            lat = 37;
-            lng = -121;
+            lat = 34.4;
+            lng = -119.7;
         }
 
         // construct map
