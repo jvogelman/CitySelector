@@ -1,19 +1,15 @@
 <?php
 // return list of acronyms in json format
 
-$fh1 = fopen("output.txt", "w");
 
 // read in our acronym list
 $fh = fopen("StateAbbreviations.csv", "r") or die("couldn\'t open file: StateAbbreviations.csv");
 
+$mapByAcronym = array();
+$mapByStateName = array();
 
-fwrite($fh1, 'opened file\n');
+while (!feof($fh)) {
 
-$map = array();
-
-while (!feof($fh1)) {
-
-	fwrite($fh1, "reading file\n");
 	$line = fgets($fh);
 	
 	// line is formatted: state,acronym
@@ -24,13 +20,14 @@ while (!feof($fh1)) {
 	$stateName = trim(substr($line, 0, $comma));	
 	$acronym = trim(substr($line, $comma + 1));
 	
-	//list ($stateName, $acronym) = fscanf($fh, "%s,%s");
-	fwrite($fh1, "found state " . $stateName . " and acronym " . $acronym . "\n");
-	$map[$acronym] = $stateName;
+	$mapByAcronym[$acronym] = $stateName;
+	$mapByStateName[$stateName] = $acronym;
 }
 fclose($fh);
 
-echo json_encode($map);
+$returnMap = array();
+$returnMap['MappedByAcronym'] = $mapByAcronym;
+$returnMap['MappedByStateName'] = $mapByStateName;
+echo json_encode($returnMap);
 
-fclose($fh1);
 ?>

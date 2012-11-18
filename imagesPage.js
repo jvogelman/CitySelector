@@ -15,11 +15,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	
 	elementWidth -= 20;	// #### I couldn't figure out why it was necessary to add this...
 	
-	this.displayImages = function(items) {
 		
-		
-	}
-	
 	this.search = function(searchStr, displayFunction) {
 		
 		var numImages = 20;

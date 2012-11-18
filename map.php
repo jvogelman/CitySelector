@@ -33,18 +33,19 @@
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw&libraries=places&sensor=false">
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>		<!-- Google Loader -->
-	<script type="text/javascript" src="../js/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/underscore-min.js"></script>
-    <script type="text/javascript" src="../js/backbone-min.js"></script>
-    <script type="text/javascript" src="./tabbedContentView.js"></script>
-    <script type="text/javascript" src="./wikipediaView.js"></script>
-    <script type="text/javascript" src="./imagesPage.js"></script>
-	<script type="text/javascript" src="../js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/underscore-min.js"></script>
+    <script type="text/javascript" src="/js/backbone-min.js"></script>
+    <script type="text/javascript" src="/CitySelector/tabbedContentView.js"></script>
+    <script type="text/javascript" src="/CitySelector/wikipediaView.js"></script>
+    <script type="text/javascript" src="/CitySelector/imagesPage.js"></script>
+	<script type="text/javascript" src="/js/jquery.cookie.js"></script>
     <script type="text/javascript">
 
     var wikipediaView;
     var map;
-    var stateAcronyms;
+    var stateAcronymsByStateName;
+    var stateAcronymsByAcronym;
 
 	// trim spaces before and after a string
     String.prototype.trim = function() {
@@ -79,6 +80,26 @@
 		    	);
 			}
 		);
+    }
+
+    // assuming wikipediaPageName represents a U.S. city, extract the city name
+    function getCity(wikipediaPageName) {
+        var comma;
+		if ((comma = wikipediaPageName.indexOf(',_')) != '') {
+			return wikipediaPageName.substr(0, comma);
+		} else {
+			return '';
+		}
+    }
+
+    // assuming wikipediaPageName represents a U.S. city, extract the state name
+    function getState(wikipediaPageName) {
+        var comma;
+		if ((comma = wikipediaPageName.indexOf(',_')) != '') {
+			return wikipediaPageName.substr(comma + 2);
+		} else {
+			return '';
+		}
     }
 
  	       
@@ -177,7 +198,8 @@
             data: {},
             url: 'stateAcronyms.php',
             success: function(data) {
-                stateAcronyms = data;
+            	stateAcronymsByAcronym = data['MappedByAcronym'];
+            	stateAcronymsByStateName = data['MappedByStateName'];
             },
             error: function(data) {
                 alert('Darn: couldn\'t get list of state acronyms');
@@ -288,8 +310,8 @@
 			var comma;
 			if ((comma = page.indexOf(',')) != -1) {
 				var stateOrCountry = page.substr(comma + 1).trim().toUpperCase();
-				if (stateOrCountry.length == 2 && stateAcronyms[stateOrCountry] != undefined) {
-					page = page.substr(0, comma + 1) + ' ' + stateAcronyms[stateOrCountry];
+				if (stateOrCountry.length == 2 && stateAcronymsByAcronym[stateOrCountry] != undefined) {
+					page = page.substr(0, comma + 1) + ' ' + stateAcronymsByAcronym[stateOrCountry];
 				}	
 			}
 
@@ -343,6 +365,9 @@
 		        $('#goButton').click();
 	        }
 		});
+
+		$('#location').tooltip({trigger:'hover', placement: 'bottom', title: 'Format: "City, State" or "City, Country"',
+			animation: 'true', delay: { show: 200, hide: 100 }});
     });
     </script>
   </head>
@@ -360,5 +385,10 @@
     </tr></table>
     <div id="status"></div>
   	<div id="results"><table></table></div>
+  	
+  	
+
+
+
   </body>
 </html>
