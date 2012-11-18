@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     	
-    <link rel="stylesheet" href="../js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.min.css">
     <style type="text/css">
       	html { height: 100% }
       	body { height: 100%; margin: 0; padding: 0 }
