@@ -188,6 +188,21 @@
         	}
         );
     }
+
+    $(window).load(function(){    	
+    	// fade in and out popovers to explain how to use the page
+    	$('#map_canvas').popover({placement: 'top', content: 'Double click on a city on the map...',
+			animation: 'true', trigger: 'manual' });
+		$('#location').popover({placement: 'left', content: '...or enter a city over here', animation: 'true', trigger: 'manual' });
+        $('#map_canvas').popover('show');
+        window.setTimeout(function() {
+        	$('#map_canvas').popover('hide');
+        	$('#location').popover('show');
+        	 window.setTimeout(function() {
+        		 $('#location').popover('hide');
+        	}, 2500);
+        }, 2500);
+    });
 	    
     $(document).ready(function(){
 
@@ -383,9 +398,6 @@
 	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" style="height:100%"></div></td>
     	
     </tr></table>
-    <div id="status"></div>
-  	<div id="results"><table></table></div>
-  	
   	
 
 
