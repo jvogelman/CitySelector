@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<!--  <!DOCTYPE HTML>-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 5.0 Transitional//EN">
+<!--   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">-->
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
@@ -20,6 +22,10 @@
 	  	#cityName {
 	  		padding: 10px;
 	  	}
+	  	#location {
+			border: 1px solid #666;
+			height: 24px;
+		}
 	  		  	
     </style>
     
@@ -233,7 +239,7 @@
         // construct map
 		var mapOptions = {
 	    	center: new google.maps.LatLng(lat, lng),
-	        zoom: 8,
+	        zoom: 7,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP,
 	        disableDoubleClickZoom: true
 	    };
@@ -389,13 +395,13 @@
   <body>
   	<div class='row-fluid' style='height:10%'>
   	<h1><span class='span6 offset1'><em><span id='cityName'></span></em></span></h1>
-  	<span class='span4 offset1'>City: <input type='text' id='location' placeholder='Please enter a location'/><button id='goButton'>Go!</button></span>
+  	<span class='span4 offset1'>City: <input type='text' id='location' placeholder='Please enter a location' ><button id='goButton'>Go!</button></span>
   	</div>
     <table style='width:100%;height:90%'>
     <tr style='height:90%'>
-    <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas" style=" height:100%"></div></td>
+    <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas"></div></td>
 
-	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" style="height:100%"></div></td>
+	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" ></div></td>
     	
     </tr></table>
   	
