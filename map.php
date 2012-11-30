@@ -1,11 +1,12 @@
-<!--  <!DOCTYPE HTML>-->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 5.0 Transitional//EN">
-<!--   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">-->
+<!DOCTYPE HTML>
+<!--<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 5.0 Transitional//EN">
+   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">-->
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     	
     <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.min.css">
+    
     <style type="text/css">
       	html { height: 100% }
       	body { height: 100%; margin: 0; padding: 0 }
@@ -397,16 +398,17 @@
   	<h1><span class='span6 offset1'><em><span id='cityName'></span></em></span></h1>
   	<span class='span4 offset1'>City: <input type='text' id='location' placeholder='Please enter a location' ><button id='goButton'>Go!</button></span>
   	</div>
-    <table style='width:100%;height:90%'>
+<!--     <table style='width:100%;height:90%'>
     <tr style='height:90%'>
     <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas"></div></td>
 
 	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" ></div></td>
     	
     </tr></table>
-  	
-
-
-
+-->
+<div class='row-fluid' style='height:90%'>
+<span class='span6' id="map_canvas"></span>
+<span class='span6' id="wikipedia"></span>
+</div>
   </body>
 </html>
