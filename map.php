@@ -27,6 +27,10 @@
 			border: 1px solid #666;
 			height: 24px;
 		}
+		#goButton {
+			height: 32px;
+		}
+		
 		
 	  		  	
     </style>
@@ -396,20 +400,13 @@
   </head>
   <body>
   	<div class='row-fluid' style='height:10%'>
-  	<h1><span class='span6 offset1'><em><span id='cityName'></span></em></span></h1>
-  	<span class='span4 offset1'>City: <input type='text' id='location' placeholder='Please enter a location' ><button id='goButton'>Go!</button></span>
+  	<h1><div class='span6 offset1'><em><span id='cityName'></span></em></div></h1>
+  	<div class='span4 offset1 input-append'><h4 style="display:inline"><span style='vertical-align:middle'>City: </span></h4><input type='text' id='location' placeholder='Please enter a location' ><button id='goButton'>Go!</button></div>
   	</div>
-<!--     <table style='width:100%;height:90%'>
-    <tr style='height:90%'>
-    <td style='border-width:1px;border-style:solid;width:50%;' valign=top><div id="map_canvas"></div></td>
 
-	<td style='border-width:1px;border-style:solid;' valign=top><div id="wikipedia" ></div></td>
-    	
-    </tr></table>
--->
-<div class='row-fluid' style='height:90%'>
-<span class='span6' id="map_canvas"></span>
-<span class='span6' id="wikipedia"></span>
-</div>
+	<div class='row-fluid' style='height:90%'>
+		<div class='span6' id="map_canvas"></div>
+		<div class='span6' id="wikipedia"></div>
+	</div>
   </body>
 </html>

@@ -1,10 +1,6 @@
 
 function imageError(img, displayFunction) {
 	$(img).remove();
-	
-	//if (displayFunction != null) {
-	//	displayFunction("just a test");
-	//}
 }
 
 function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
