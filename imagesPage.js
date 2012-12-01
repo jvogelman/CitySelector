@@ -23,7 +23,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		var minMargin = 5;
 		
 		var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
-			searchStr + '&searchType=image&count=' + numImages + '&imgType=photo';
+			searchStr + '&searchType=image&count=' + numImages + '&imgType=photo&format=json&callback=?';
 		$.getJSON(url, {},
 			function(result) {
 				var returnStr = '';
@@ -68,8 +68,9 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 					// what is the width of the margin in this row?
 					var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 						
-					returnStr += '<img class="googleImage" onerror="imageError(this, ' + displayFunction + ')" src="' + result.items[i].link + '" height="' + imageHeight + 
-					' " width="' + newWidth + '" style="margin-left:' + marginWidth + 'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>';
+					returnStr += '<img class="googleImage" onerror="imageError(this, ' + displayFunction + ')" src="' + result.items[i].link + '" ' +
+					'style="height:' + imageHeight + 'px;margin-left:' + marginWidth + 'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>';
+					
 				
 					imagesThisRow++;
 					if (imagesThisRow == numImages[currentRow]) {
