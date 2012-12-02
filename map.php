@@ -210,6 +210,8 @@
         $('#map_canvas').popover('show');
         window.setTimeout(function() {
         	$('#map_canvas').popover('hide');
+
+    		$('#location').popover({content: '...or enter a city over here'}); // this is a redundant, but trying to figure out why it's not working...    		
         	$('#location').popover('show');
         	 window.setTimeout(function() {
         		 $('#location').popover('hide');
@@ -398,6 +400,7 @@
 			animation: 'true', delay: { show: 200, hide: 100 }});
     });
     </script>
+    <title>City Viewer</title>
   </head>
   <body>
   	<div class='row-fluid' style='height:10%'>
