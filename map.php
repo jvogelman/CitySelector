@@ -22,6 +22,7 @@
 	  	}
 	  	#cityName {
 	  		padding: 10px;
+	  		font-family: Georgia;
 	  	}
 	  	#location {
 			border: 1px solid #666;
@@ -400,7 +401,7 @@
   </head>
   <body>
   	<div class='row-fluid' style='height:10%'>
-  	<h1><div class='span6 offset1'><em><span id='cityName'></span></em></div></h1>
+  	<h1><div class='span6 offset1'><span id='cityName'></span></div></h1>
   	<div class='span4 offset1 input-append'><h4 style="display:inline"><span style='vertical-align:middle'>City: </span></h4><input type='text' id='location' placeholder='Please enter a location' ><button id='goButton'>Go!</button></div>
   	</div>
 
