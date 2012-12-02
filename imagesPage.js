@@ -138,10 +138,8 @@ ImagesPage.prototype.removeImage = function(img) {
 					{
 						clearTimeout(_this._errorTimeout);
 						_this._html = _this.getFormattedImages();
-						//$(img).parent().html(_this._html);
 						var parent = $(img).parent('.tab-pane');
 						$(parent).html(_this._html);
-						//$('.tab-pane').html('blah');
 					}, 500);
 			}
 		}

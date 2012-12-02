@@ -27,7 +27,7 @@ function WikipediaView(element, cityNameElement) {
 						if (_this.entryFound(textVal)) {			  	  		  	
 			  	  			// inspect here if page was found or not
 							_this.displayPage(pageName);
-							$(_this._cityNameElement).html(pageName.replace('_', ' '));
+							$(_this._cityNameElement).html(pageName.replace(/_/g, ' '));
 							_this._pageName = pageName;
 							
 							if (successFunction != null) {
