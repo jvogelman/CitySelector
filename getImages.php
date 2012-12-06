@@ -18,34 +18,45 @@ function extractArrayFromSelect($stmt) {
 	return $results;
 }
 
+function connectToDatabase(){
+	$mysqli = new mysqli("localhost", "root", "rromE1(", "City");
+	if ($mysqli->connect_errno) {
+		return false;
+	}
+	return true;
+}
+
+function addCityImageToDatabase($city, $link, $thumbnailWidth, $thumbnailHeight) {
+	
+}
+
+function getImagesForCity($city) {
+	// construct a prepared statement to prevent SQL Injection and to look for this city
+	if (!($stmt = $mysqli->prepare("SELECT Image, ThumbnailWidth, ThumbnailHeight FROM CityImages WHERE CityName = ?"))) {
+		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+	$city = $_GET['City'];
+	$stmt->bind_param( "s", $city);
+	$stmt->execute();
+	
+	$images = extractArrayFromSelect($stmt);
+	if (count($images) == 0) {
+		return null;
+	} else {
+		return $images;
+	}
+}
+
 try
 {
 	if (isset($_GET['City'])) {
 		
-	
-		// do we already have this city in our database?
-		$mysqli = new mysqli("localhost", "root", "rromE1(", "City");
-		if ($mysqli->connect_errno) {
-			echo "Failed to connect to MySQL: " . $mysqli->connect_error;
+		if (!connectToDatabase()) {
+			echo 'failed to connect to database';
 			return;
-		} 
-		
-		// construct a prepared statement to prevent SQL Injection and to look for this city
-		if (!($stmt = $mysqli->prepare("SELECT Image, ThumbnailWidth, ThumbnailHeight FROM CityImages WHERE CityName = ?"))) {
-			echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 		}
-		$city = $_GET['City'];
-		$stmt->bind_param( "s", $city); 
-		$stmt->execute();
 		
-		$images = extractArrayFromSelect($stmt);
-		
-		if (count($images) > 0) {
-			// we have this city in our table
-		
-			echo json_encode($images);
-			return;
-		} else {
+		if (($images = getImagesForCity($city)) == null) {
 			
 			// if not, make a JSON request to Google Images
 			$googleKey = 'AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw';
@@ -66,20 +77,23 @@ try
 			
 			$json_images = json_decode($json_result, true);
 			//echo 'json_images: ' . var_dump($json_images);
-			if (isset($json_images['items'])) {
-				$items = $json_images['items'];
+			
+			$items = $json_images['items'];
+			
+			foreach ($items as $item) {
+				$link = $item['link'];
+				$thumbnailWidth = $item['image']['thumbnailWidth'];
+				$thumbnailHeight = $item['image']['thumbnailHeight'];
 				
-				foreach ($items as $item) {
-					$link = $item['link'];
-					$thumbnailWidth = $item['image']['thumbnailWidth'];
-					$thumbnailHeight = $item['image']['thumbnailHeight'];
-					
-				}
-				
-			} else {
-				echo 'items not in array';
+				// add this to the database
+				addCityImageToDatabase($city, $link, $thumbnailWidth, $thumbnailHeight);
 			}
+				
+			$images = getImagesForCity($city);
 		}
+		
+		echo json_encode($images);
+		return;
 	}
 
 } catch (Exception $e) {
