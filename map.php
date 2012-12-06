@@ -211,8 +211,7 @@
         window.setTimeout(function() {
         	$('#map_canvas').popover('hide');
 
-    		$('#location').popover({content: '...or enter a city over here'}); // this is a redundant, but trying to figure out why it's not working...    		
-        	$('#location').popover('show');
+    		$('#location').popover('show');
         	 window.setTimeout(function() {
         		 $('#location').popover('hide');
         	}, 2500);
