@@ -1,5 +1,6 @@
 <?php
 
+
 function extractArrayFromSelect($stmt) {
 	$parameters = array();
 	$results = array();
@@ -21,21 +22,31 @@ function extractArrayFromSelect($stmt) {
 function connectToDatabase(){
 	$mysqli = new mysqli("localhost", "root", "rromE1(", "City");
 	if ($mysqli->connect_errno) {
-		return false;
+		return null;
 	}
-	return true;
+	return $mysqli;
 }
 
-function addCityImageToDatabase($city, $link, $thumbnailWidth, $thumbnailHeight) {
+function addCityImageToDatabase($mysqli, $city, $link, $thumbnailWidth, $thumbnailHeight) {
+	// construct a prepared statement to prevent SQL Injection and to add this city
+	$preparedStmt = "INSERT into CityImages VALUES(?, ?, ?, ?)";
+	if (!($stmt = $mysqli->prepare($preparedStmt))) {
+		$str = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		throw new Exception($str);
+	}
 	
+	$stmt->bind_param( "ssii", $city, $link, $thumbnailWidth, $thumbnailHeight);
+	$stmt->execute();
 }
 
-function getImagesForCity($city) {
+function getImagesForCity($mysqli, $city) {
 	// construct a prepared statement to prevent SQL Injection and to look for this city
-	if (!($stmt = $mysqli->prepare("SELECT Image, ThumbnailWidth, ThumbnailHeight FROM CityImages WHERE CityName = ?"))) {
-		echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	$preparedStmt = "SELECT Image, ThumbnailWidth, ThumbnailHeight FROM CityImages WHERE CityName = ?";
+	if (!($stmt = $mysqli->prepare($preparedStmt))) {
+		$str = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		throw new Exception($str);
 	}
-	$city = $_GET['City'];
+	
 	$stmt->bind_param( "s", $city);
 	$stmt->execute();
 	
@@ -51,12 +62,15 @@ try
 {
 	if (isset($_GET['City'])) {
 		
-		if (!connectToDatabase()) {
+		$mysqli = connectToDatabase();
+		if ($mysqli == null) {
 			echo 'failed to connect to database';
 			return;
 		}
 		
-		if (($images = getImagesForCity($city)) == null) {
+		$city = $_GET['City'];
+		$images = getImagesForCity($mysqli, $city);
+		if ($images == null) {
 			
 			// if not, make a JSON request to Google Images
 			$googleKey = 'AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw';
@@ -86,10 +100,10 @@ try
 				$thumbnailHeight = $item['image']['thumbnailHeight'];
 				
 				// add this to the database
-				addCityImageToDatabase($city, $link, $thumbnailWidth, $thumbnailHeight);
+				addCityImageToDatabase($mysqli, $city, $link, $thumbnailWidth, $thumbnailHeight);
 			}
 				
-			$images = getImagesForCity($city);
+			$images = getImagesForCity($mysqli, $city);
 		}
 		
 		echo json_encode($images);

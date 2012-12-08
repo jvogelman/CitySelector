@@ -27,12 +27,18 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		var numImages = 20;
 		
-		var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
-			searchStr + '&searchType=image&count=' + numImages + '&imgType=photo&format=json&callback=?';
+		//var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
+		//	searchStr + '&searchType=image&count=' + numImages + '&imgType=photo&format=json&callback=?';
+		var url = 'http://localhost/CitySelector/getImages.php?City=' + searchStr;
+		//var url = 'http://localhost/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
+
 		$.getJSON(url, {},
 			function(result) {
+				if (result == null) {
+					return;
+				}
 				
-				_this._images = result.items;
+				_this._images = result;
 				
 				_this._html = _this.getFormattedImages();
 				
@@ -64,12 +70,12 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		for (var i = 0; i < numImg; i++) {
 			
-			if (_this._images[i].link == '') {
+			if (_this._images[i].Image == '') {
 				continue;
 			}
 			
-			var origWidth = _this._images[i].image.thumbnailWidth;
-			var origHeight = _this._images[i].image.thumbnailHeight;			
+			var origWidth = _this._images[i].ThumbnailWidth;
+			var origHeight = _this._images[i].ThumbnailHeight;			
 			var newWidth = imageHeight * origWidth/origHeight;
 			
 			if (rowCurrWidth + newWidth > elementWidth) {
@@ -90,19 +96,19 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		for (var i = 0; i < numImg; i++) {
 			
-			if (_this._images[i].link == '') {
+			if (_this._images[i].Image == '') {
 				continue;
 			}
 			
-			var origWidth = _this._images[i].image.thumbnailWidth;
-			var origHeight = _this._images[i].image.thumbnailHeight;			
+			var origWidth = _this._images[i].ThumbnailWidth;
+			var origHeight = _this._images[i].ThumbnailHeight;			
 			var newWidth = imageHeight * origWidth/origHeight;
 			
 			// what is the width of the margin in this row?
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
 				
-			returnStr += '<img class="googleImage" src="' + _this._images[i].link + '" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' +
+			returnStr += '<img class="googleImage" src="' + _this._images[i].Image + '" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' +
 			'style="height:' + imageHeight + 'px;width:' + newWidth + 'px;margin-left:' + marginWidth + 'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>';
 			
 		
