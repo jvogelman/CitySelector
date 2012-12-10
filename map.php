@@ -397,6 +397,7 @@
 
 		$('#location').tooltip({trigger:'hover', placement: 'bottom', title: 'Format: "City, State" or "City, Country"',
 			animation: 'true', delay: { show: 200, hide: 100 }});
+
     });
     </script>
     <title>City Viewer</title>

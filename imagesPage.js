@@ -3,6 +3,12 @@ function imageError(imagesPage, img) {
 	imagesPage.removeImage(img);	
 }
 
+function promptForReplacement(imagesPage, img) {
+	if (prompt("Should this image be replaced with something else? (will affect future queries by other users)")) {
+		
+	}
+}
+
 ImagesPage.prototype._ImagesPage = 0;
 
 function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
@@ -134,8 +140,13 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
 				
-			returnStr += '<img class="googleImage" src="' + _this._images[i].Image + '" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' +
-			'style="height:' + imageHeight + 'px;width:' + newWidth + 'px;margin-left:' + marginWidth + 'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>';
+			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city"><img class="googleImage" src="' + _this._images[i].Image + 
+			//returnStr += '<img class="googleImage" src="' + _this._images[i].Image + 
+				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
+				' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
+				'style="height:' + imageHeight + 'px;width:' + newWidth + 'px;margin-left:' + marginWidth + 
+				'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
+				'</a>';
 			
 		
 			imagesThisRow++;
@@ -157,8 +168,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 ImagesPage.prototype.removeImage = function(img) {
 	
 	for (var i = 0; i < this._images.length; i++) {
-		if (this._images[i].link == img.src) {
-			this._images[i].link = '';		
+		if (this._images[i].Image == img.src) {
+			this._images[i].Image = '';		
 	
 			var _this = this;
 			
@@ -170,7 +181,7 @@ ImagesPage.prototype.removeImage = function(img) {
 					{
 						clearTimeout(_this._errorTimeout);
 						_this._html = _this.getFormattedImages();
-						var parent = $(img).parent('.tab-pane');
+						var parent = $(img).closest('.tab-pane');
 						$(parent).delay(500).html(_this._html);
 					}, 500);
 			}
