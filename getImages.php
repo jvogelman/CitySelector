@@ -1,4 +1,6 @@
-<?php
+<?php 
+header('content-type: application/json; charset=utf-8');
+header("access-control-allow-origin: *");
 
 
 function extractArrayFromSelect($stmt) {
@@ -75,11 +77,8 @@ try
 			// if not, make a JSON request to Google Images
 			$googleKey = 'AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw';
 			$customSearchEngineIdentifier = '002564124849599434674:zamvpdxusfu';
-			//$url = 'https://www.googleapis.com/customsearch/v1?key=' . $googleKey . '&cx=' + $customSearchEngineIdentifier . '&q=' .
-			//	$city . '&searchType=image&count=10&imgType=photo&format=json&callback=?';
 			$url = 'https://www.googleapis.com/customsearch/v1?key=' . $googleKey . '&cx=' . $customSearchEngineIdentifier . '&q=' .
 					$city . '&searchType=image&count=10&imgType=photo';
-			//echo 'url = ' . $url;	
 			
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -90,7 +89,6 @@ try
 			curl_close($ch);
 			
 			$json_images = json_decode($json_result, true);
-			//echo 'json_images: ' . var_dump($json_images);
 			
 			$items = $json_images['items'];
 			
@@ -106,7 +104,8 @@ try
 			$images = getImagesForCity($mysqli, $city);
 		}
 		
-		echo json_encode($images);
+		echo $_GET['callback'] . '('.json_encode($images).')';
+		//echo json_encode($images);
 		return;
 	}
 

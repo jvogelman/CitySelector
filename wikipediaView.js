@@ -152,32 +152,32 @@ function WikipediaView(element, cityNameElement) {
 		// go through the string character by character: ignore html tags and locate the characters in searchStr
 		// build up returnStr to include everything but any instances of searchStr
 		for (var index = 0; index < str.length; index++) {
-			var char = str[index];
+			var ch = str[index];
 			
-			while (char == '<' || char == searchStr[searchIndex]) {
-				if (char == '<') {
+			while (ch == '<' || ch == searchStr[searchIndex]) {
+				if (ch == '<') {
 					// add the entire tag to returnStr
-					while (char != '>') {
-						returnStr += char;
+					while (ch != '>') {
+						returnStr += ch;
 						index++;
-						char = str[index];
+						ch = str[index];
 					} 
 					returnStr += '>';
 					index++;
-					char = str[index];
+					ch = str[index];
 				} else {
 					// looks like we might be finding the searchStr
-					foundStr += char;
+					foundStr += ch;
 					if (foundStr == searchStr) {
 						// we found it!
 						foundStr = '';
 						searchIndex = 0;
 						index++;
-						char = str[index];
+						ch = str[index];
 						continue;
 					}
 					index++;
-					char = str[index];
+					ch = str[index];
 					searchIndex++;
 				}
 			}
@@ -189,7 +189,7 @@ function WikipediaView(element, cityNameElement) {
 				searchIndex = 0;
 			}
 			
-			returnStr += char;
+			returnStr += ch;
 		}
 		
 		return returnStr;

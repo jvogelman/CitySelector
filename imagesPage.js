@@ -29,10 +29,11 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		//var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
 		//	searchStr + '&searchType=image&count=' + numImages + '&imgType=photo&format=json&callback=?';
-		var url = 'http://localhost/CitySelector/getImages.php?City=' + searchStr;
-		//var url = 'http://localhost/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
-
-		$.getJSON(url, {},
+		//var urlStr = 'http://localhost/CitySelector/getImages.php?City=' + searchStr;
+		//var urlStr = 'getImages.php?City=' + searchStr;
+		var urlStr = 'http://localhost/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
+		//$.ajax({url: urlStr, dataType: 'json', success:
+		/*$.getJSON(urlStr,
 			function(result) {
 				if (result == null) {
 					return;
@@ -46,7 +47,32 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 					displayFunction(_this._html);
 				}
 			}
-		);	
+		);	*/
+		
+		$.ajax({
+			   type: 'GET',
+			    url: urlStr,
+			    async: false,
+			    
+			    contentType: "application/json",
+			    dataType: 'jsonp',
+			    success: function(result) {
+					if (result == null) {
+						return;
+					}
+					
+					_this._images = result;
+					
+					_this._html = _this.getFormattedImages();
+					
+					if (displayFunction != null) {
+						displayFunction(_this._html);
+					}
+				},
+			    error: function(e) {
+			       console.log(e.message);
+			    }
+			});
 		
 	}
 	
