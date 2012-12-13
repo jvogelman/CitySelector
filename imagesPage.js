@@ -3,10 +3,14 @@ function imageError(imagesPage, img) {
 	imagesPage.removeImage(img);	
 }
 
+function imageLoad(imagesPage, img){
+	imagesPage.imageLoaded(img);	
+}
+
 function promptForReplacement(imagesPage, img) {
-	if (prompt("Should this image be replaced with something else? (will affect future queries by other users)")) {
+	//if (confirm("Should this image be replaced with something else? (will affect future queries by other users)")) {
 		
-	}
+	//}
 }
 
 ImagesPage.prototype._ImagesPage = 0;
@@ -22,6 +26,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	this._images = Array();
 	this._errorTimeout = 0;
 	
+	this._imagesLoaded = 0;
+	this._needsReload = false;
 	
 		
 	this.search = function(searchStr, displayFunction) {
@@ -141,9 +147,9 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			
 				
 			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city"><img class="googleImage" src="' + _this._images[i].Image + 
-			//returnStr += '<img class="googleImage" src="' + _this._images[i].Image + 
 				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
 				' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
+				//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
 				'style="height:' + imageHeight + 'px;width:' + newWidth + 'px;margin-left:' + marginWidth + 
 				'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
 				'</a>';
@@ -158,18 +164,33 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			
 		}
 		
+		this._imagesLoaded = 0;
+		this._needsReload = false;
+		
 		return returnStr;
 	}
 	
 }
 
-
+/*
+ImagesPage.prototype.imageLoaded = function(img) {
+	this._imagesLoaded++;
+	
+	if (this._imagesLoaded == 10) {
+		if (this._needsReload) {
+			this._html = this.getFormattedImages();
+			var parent = $(img).closest('.tab-pane');
+			$(parent).html(_this._html);
+		}
+	}
+}*/
 
 ImagesPage.prototype.removeImage = function(img) {
 	
 	for (var i = 0; i < this._images.length; i++) {
 		if (this._images[i].Image == img.src) {
 			this._images[i].Image = '';		
+			//this._needsReload = true;
 	
 			var _this = this;
 			
@@ -179,10 +200,12 @@ ImagesPage.prototype.removeImage = function(img) {
 				_this._errorTimeout = setTimeout(
 					function()
 					{
+						//alert('broken image');
 						clearTimeout(_this._errorTimeout);
 						_this._html = _this.getFormattedImages();
 						var parent = $(img).closest('.tab-pane');
-						$(parent).delay(500).html(_this._html);
+						//$(parent).delay(500).html(_this._html);
+						$(parent).html(_this._html);
 					}, 500);
 			}
 		}

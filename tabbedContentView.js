@@ -1,7 +1,3 @@
-//(function($){
-	//Backbone.sync = function(method, model, success, error){ 
-	//	success();
-	//}
 	  
 	var Tab = Backbone.Model.extend({
 		defaults: {
@@ -175,7 +171,6 @@
 	});
 
 	    
-//})(jQuery);
 	
 	
 	
