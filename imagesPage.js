@@ -108,7 +108,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		for (var i = 0; i < numImg; i++) {
 			
-			if (_this._images[i].Image == '') {
+			if (_this._images[i].Link == '') {
 				continue;
 			}
 			
@@ -134,7 +134,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		for (var i = 0; i < numImg; i++) {
 			
-			if (_this._images[i].Image == '') {
+			if (_this._images[i].Link == '') {
 				continue;
 			}
 			
@@ -146,7 +146,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
 				
-			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city"><img class="googleImage" src="' + _this._images[i].Image + 
+			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city"><img class="googleImage" src="' + _this._images[i].Link + 
 				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
 				' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
 				//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
@@ -188,8 +188,8 @@ ImagesPage.prototype.imageLoaded = function(img) {
 ImagesPage.prototype.removeImage = function(img) {
 	
 	for (var i = 0; i < this._images.length; i++) {
-		if (this._images[i].Image == img.src) {
-			this._images[i].Image = '';		
+		if (this._images[i].Link == img.src) {
+			this._images[i].Link = '';		
 			//this._needsReload = true;
 	
 			var _this = this;
