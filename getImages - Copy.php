@@ -1,11 +1,25 @@
 <?php 
-
-require_once 'City.php';
-
 header('content-type: application/json; charset=utf-8');
 header("access-control-allow-origin: *");
 
 
+function extractArrayFromSelect($stmt) {
+	$parameters = array();
+	$results = array();
+	$meta = $stmt->result_metadata();
+	while ( $field = $meta->fetch_field() ) {
+		$parameters[] = &$row[$field->name];
+	}
+	call_user_func_array(array($stmt, 'bind_result'), $parameters);
+	while ( $stmt->fetch() ) {
+		$x = array();
+		foreach( $row as $key => $val ) {
+			$x[$key] = $val;
+		}
+		$results[] = $x;
+	}
+	return $results;
+}
 
 function connectToDatabase(){
 	$mysqli = new mysqli("localhost", "root", "rromE1(", "City");
@@ -79,21 +93,15 @@ try
 			return;
 		}
 		
-		$cityName = $_GET['City'];
-		
-		
-		
-		//$images = getImagesForCity($mysqli, $cityName);
-		//if ($images == null) {
-		$city = City::GetCity($mysqli, $cityName);
-			
-		if ($city == null) {
+		$city = $_GET['City'];
+		$images = getImagesForCity($mysqli, $city);
+		if ($images == null) {
 			
 			// if not, make a JSON request to Google Images
 			$googleKey = 'AIzaSyAhIqD8IE7ad2O1W_elcwc9fGrpY3-cTRw';
 			$customSearchEngineIdentifier = '002564124849599434674:zamvpdxusfu';
 			$url = 'https://www.googleapis.com/customsearch/v1?key=' . $googleKey . '&cx=' . $customSearchEngineIdentifier . '&q=' .
-					$cityName . '&searchType=image&count=10&imgType=photo';
+					$city . '&searchType=image&count=10&imgType=photo';
 			
 			$ch = curl_init($url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -108,8 +116,7 @@ try
 			$items = $json_images['items'];
 			
 			// create new City entry
-			$city = new City($mysqli, true, $cityName, 10, 10);
-			//$cityId = addCityToDatabase($mysqli, $cityName, 10, 10);
+			$cityId = addCityToDatabase($mysqli, $city, 10, 10);
 			
 			
 			// create new Image entries
@@ -120,14 +127,11 @@ try
 				$thumbnailWidth = $item['image']['thumbnailWidth'];
 				$thumbnailHeight = $item['image']['thumbnailHeight'];
 								
-				$city->addImage($imageIndex, $link, $thumbnailWidth, $thumbnailHeight, true);
-				//addCityImageToDatabase($mysqli, $cityId, $imageIndex, $link, $thumbnailWidth, $thumbnailHeight, true);
+				addCityImageToDatabase($mysqli, $cityId, $imageIndex, $link, $thumbnailWidth, $thumbnailHeight, true);
 			}
 				
-			//$images = getImagesForCity($mysqli, $cityName);
+			$images = getImagesForCity($mysqli, $city);
 		}
-		
-		$images = $city->getVisibleImages();
 		
 		echo $_GET['callback'] . '('.json_encode($images).')';
 		//echo json_encode($images);
