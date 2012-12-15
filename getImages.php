@@ -15,59 +15,6 @@ function connectToDatabase(){
 	return $mysqli;
 }
 
-function addCityToDatabase($mysqli, $cityName, $lastImageDisplayed, $lastImageRetrieved) {
-	static $stmt = null;
-	if ($stmt == null) {
-		// construct a prepared statement to prevent SQL Injection and to add this city
-		$preparedStmt = "INSERT into City (Name, LastImageDisplayed, LastImageRetrieved) VALUES(?, ?, ?)";
-		if (!($stmt = $mysqli->prepare($preparedStmt))) {
-			$str = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-			throw new Exception($str);
-		}
-	}
-
-	$stmt->bind_param( "sii", $cityName, $lastImageDisplayed, $lastImageRetrieved );
-	$stmt->execute();
-	return $stmt->insert_id;
-}
-
-function addCityImageToDatabase($mysqli, $cityId, $index, $link, $thumbnailWidth, $thumbnailHeight, $visible) {
-	static $stmt = null;
-	if ($stmt == null) {
-		// construct a prepared statement to prevent SQL Injection and to add this image
-		$preparedStmt = "INSERT into Image VALUES(?, ?, ?, ?, ?, ?)";
-		if (!($stmt = $mysqli->prepare($preparedStmt))) {
-			$str = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-			throw new Exception($str);
-		}
-	}
-	
-	$stmt->bind_param( "iisiii", $cityId, $index, $link, $thumbnailWidth, $thumbnailHeight, $visible );
-	$stmt->execute();
-}
-
-function getImagesForCity($mysqli, $cityName) {
-	static $stmt = null;
-	if ($stmt == null) {
-		// construct a prepared statement to prevent SQL Injection and to look for this city
-		$preparedStmt = "SELECT Image.Link, Image.ThumbnailWidth, Image.ThumbnailHeight FROM City, Image WHERE " . 
-				"City.Name = ? AND City.ID = Image.CityID AND Image.Visible = true";
-		if (!($stmt = $mysqli->prepare($preparedStmt))) {
-			$str = "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-			throw new Exception($str);
-		}
-	}
-	
-	$stmt->bind_param( "s", $cityName);
-	$stmt->execute();
-	
-	$images = extractArrayFromSelect($stmt);
-	if (count($images) == 0) {
-		return null;
-	} else {
-		return $images;
-	}
-}
 
 try
 {
@@ -82,9 +29,6 @@ try
 		$cityName = $_GET['City'];
 		
 		
-		
-		//$images = getImagesForCity($mysqli, $cityName);
-		//if ($images == null) {
 		$city = City::GetCity($mysqli, $cityName);
 			
 		if ($city == null) {
@@ -109,7 +53,6 @@ try
 			
 			// create new City entry
 			$city = new City($mysqli, true, $cityName, 10, 10);
-			//$cityId = addCityToDatabase($mysqli, $cityName, 10, 10);
 			
 			
 			// create new Image entries
@@ -120,17 +63,13 @@ try
 				$thumbnailWidth = $item['image']['thumbnailWidth'];
 				$thumbnailHeight = $item['image']['thumbnailHeight'];
 								
-				$city->addImage($imageIndex, $link, $thumbnailWidth, $thumbnailHeight, true);
-				//addCityImageToDatabase($mysqli, $cityId, $imageIndex, $link, $thumbnailWidth, $thumbnailHeight, true);
+				$city->addImage($imageIndex + 1, $link, $thumbnailWidth, $thumbnailHeight, true);
 			}
-				
-			//$images = getImagesForCity($mysqli, $cityName);
 		}
 		
 		$images = $city->getVisibleImages();
 		
 		echo $_GET['callback'] . '('.json_encode($images).')';
-		//echo json_encode($images);
 		return;
 	}
 

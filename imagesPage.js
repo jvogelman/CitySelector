@@ -8,9 +8,9 @@ function imageLoad(imagesPage, img){
 }
 
 function promptForReplacement(imagesPage, img) {
-	//if (confirm("Should this image be replaced with something else? (will affect future queries by other users)")) {
-		
-	//}
+	if (confirm("Should this image be replaced with something else? (will affect future queries by other users)")) {
+		imagesPage.replaceImage(img);		
+	}
 }
 
 ImagesPage.prototype._ImagesPage = 0;
@@ -28,38 +28,19 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	
 	this._imagesLoaded = 0;
 	this._needsReload = false;
+	this._searchStr = '';
 	
 		
 	this.search = function(searchStr, displayFunction) {
 
 		ImagesPage.prototype._ImagesPage = this;
 
-		
+		_this._searchStr = searchStr;
 		_this._errorTimeout = 0;	// clear this
 		
 		var numImages = 20;
 		
-		//var url = 'https://www.googleapis.com/customsearch/v1?key=' + key + '&cx=' + customSearchEngineIdentifier + '&q=' + 
-		//	searchStr + '&searchType=image&count=' + numImages + '&imgType=photo&format=json&callback=?';
-		//var urlStr = 'http://localhost/CitySelector/getImages.php?City=' + searchStr;
-		//var urlStr = 'getImages.php?City=' + searchStr;
 		var urlStr = 'http://localhost/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
-		//$.ajax({url: urlStr, dataType: 'json', success:
-		/*$.getJSON(urlStr,
-			function(result) {
-				if (result == null) {
-					return;
-				}
-				
-				_this._images = result;
-				
-				_this._html = _this.getFormattedImages();
-				
-				if (displayFunction != null) {
-					displayFunction(_this._html);
-				}
-			}
-		);	*/
 		
 		$.ajax({
 			   type: 'GET',
@@ -146,7 +127,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
 				
-			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city"><img class="googleImage" src="' + _this._images[i].Link + 
+			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
+				'<img class="googleImage" id="' + _this._images[i].Index + '" src="' + _this._images[i].Link + 
 				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
 				' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
 				//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
@@ -210,6 +192,12 @@ ImagesPage.prototype.removeImage = function(img) {
 			}
 		}
 	}
+}
+
+ImagesPage.prototype.replaceImage = function(img) {
+	var imageIndex = $(img).attr('id');
+	var urlStr = 'http://localhost/CitySelector/replaceImage.php?City=' + this._searchStr + '&ImageIndex=' + imageIndex;
+	
 }
 
 

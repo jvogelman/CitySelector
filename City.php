@@ -85,7 +85,7 @@ class City {
 		static $stmt = null;
 		if ($stmt == null) {
 			// construct a prepared statement to prevent SQL Injection and to look for this city
-			$preparedStmt = "SELECT Image.Link, Image.ThumbnailWidth, Image.ThumbnailHeight FROM City, Image WHERE " .
+			$preparedStmt = "SELECT Image.Link, Image.ThumbnailWidth, Image.ThumbnailHeight, Image.Index FROM City, Image WHERE " .
 					"City.Name = ? AND City.ID = Image.CityID AND Image.Visible = true";
 			if (!($stmt = $this->_mysqli->prepare($preparedStmt))) {
 				$str = "Prepare failed: (" . $this->_mysqli->errno . ") " . $this->_mysqli->error;
