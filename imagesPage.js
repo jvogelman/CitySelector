@@ -126,15 +126,15 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			// what is the width of the margin in this row?
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
-				
-			returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
+			returnStr += _this.htmlForImage(_this._images[i].Index, _this._images[i].Link, newWidth, imageHeight, marginWidth);
+			/*returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
 				'<img class="googleImage" id="' + _this._images[i].Index + '" src="' + _this._images[i].Link + 
 				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
 				' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
 				//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
 				'style="height:' + imageHeight + 'px;width:' + newWidth + 'px;margin-left:' + marginWidth + 
 				'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
-				'</a>';
+				'</a>';*/
 			
 		
 			imagesThisRow++;
@@ -152,6 +152,17 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		return returnStr;
 	}
 	
+}
+
+ImagesPage.prototype.htmlForImage = function(index, link, width, height, marginWidth) {
+	return '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
+	'<img class="googleImage" id="' + index + '" src="' + link + 
+	'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
+	' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
+	//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
+	'style="height:' + height + 'px;width:' + width + 'px;margin-left:' + marginWidth + 
+	'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
+	'</a>';
 }
 
 /*
@@ -196,7 +207,33 @@ ImagesPage.prototype.removeImage = function(img) {
 
 ImagesPage.prototype.replaceImage = function(img) {
 	var imageIndex = $(img).attr('id');
-	var urlStr = 'http://localhost/CitySelector/replaceImage.php?City=' + this._searchStr + '&ImageIndex=' + imageIndex;
+	var urlStr = 'http://localhost/CitySelector/replaceImage.php?City=' + this._searchStr + '&ImageIndex=' + imageIndex + '&callback=?';
+
+	var _this = this;
+	
+	$.ajax({
+		   type: 'GET',
+		    url: urlStr,
+		    async: false,
+		    
+		    contentType: "application/json",
+		    dataType: 'jsonp',
+		    success: function(result) {
+				if (result == null) {
+					return;
+				}
+				var newImage = result;
+				
+				var origWidth = parseInt($(img).css('width'), 10);
+				var newHeight = origWidth * (newImage.ThumbnailHeight / newImage.ThumbnailWidth);
+				var origMargin = parseInt($(img).css('margin-left'));
+				
+				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, origWidth, newHeight, origMargin));
+			},
+		    error: function(e) {
+		       console.log(e.message);
+		    }
+		});
 	
 }
 

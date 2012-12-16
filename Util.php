@@ -1,5 +1,15 @@
 <?php
 
+
+function connectToDatabase(){
+	$mysqli = new mysqli("localhost", "root", "rromE1(", "City");
+	if ($mysqli->connect_errno) {
+		return null;
+	}
+	return $mysqli;
+}
+
+
 function extractArrayFromSelect($stmt) {
 	$parameters = array();
 	$results = array();
@@ -17,3 +27,5 @@ function extractArrayFromSelect($stmt) {
 	}
 	return $results;
 }
+
+
