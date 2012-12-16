@@ -224,11 +224,20 @@ ImagesPage.prototype.replaceImage = function(img) {
 				}
 				var newImage = result;
 				
+				// calculate dimensions for the new image: don't let the new image's height or width exceed the image from before
 				var origWidth = parseInt($(img).css('width'), 10);
+				var origHeight = parseInt($(img).css('height'), 10);
+				
+				var newWidth = origWidth;
 				var newHeight = origWidth * (newImage.ThumbnailHeight / newImage.ThumbnailWidth);
+				if (newHeight > origHeight) {
+					newHeight = origHeight;
+					newWidth = origHeight * (newImage.ThumbnailWidth / newImage.ThumbnailHeight);
+				}				
+				
 				var origMargin = parseInt($(img).css('margin-left'));
 				
-				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, origWidth, newHeight, origMargin));
+				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, newWidth, newHeight, origMargin));
 			},
 		    error: function(e) {
 		       console.log(e.message);

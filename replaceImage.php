@@ -32,7 +32,10 @@ try
 		$lastImageDisplayed = $city->getLastImageDisplayed();
 		$lastImageRetrieved = $city->getLastImageRetrieved();
 		
+		// we get 10 images at a time from Google to save on the number of queries we make to their servers
 		
+		// do we have at least one image in our database for this city that we haven't used yet, or do we have to make
+		// a new query?
 		if ($lastImageDisplayed == $lastImageRetrieved) {
 			// need more images, so make a JSON request to Google Images
 			$json_images = queryForImages($cityName, $lastImageRetrieved + 1);			
@@ -59,12 +62,19 @@ try
 			
 			$city->setLastImageDisplayed($lastImageDisplayed);
 			$city->setLastImageRetrieved($lastImageRetrieved);
-			
-			$item = $city->getLastDisplayedImage();
-			
-			// return the first item to the user
-			echo $_GET['callback'] . '(' . json_encode($item) . ')';
+		} else {
+			// we already have an image to extract from our database, so get it
+
+			$lastImageDisplayed++;				
+			$city->setLastImageDisplayed($lastImageDisplayed);
+			$city->setImageVisibility($lastImageDisplayed, 1);
 		}
+
+
+		$item = $city->getLastDisplayedImage();
+			
+		// return the first item to the user
+		echo $_GET['callback'] . '(' . json_encode($item) . ')';
 	}
 
 } catch (Exception $e) {
