@@ -235,7 +235,8 @@ ImagesPage.prototype.replaceImage = function(img) {
 					newWidth = origHeight * (newImage.ThumbnailWidth / newImage.ThumbnailHeight);
 				}				
 				
-				var origMargin = parseInt($(img).css('margin-left'));
+				var widthDifference = newWidth - origWidth;
+				var origMargin = parseInt($(img).css('margin-left')) + widthDifference / 2.0;
 				
 				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, newWidth, newHeight, origMargin));
 			},
