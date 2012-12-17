@@ -126,7 +126,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			// what is the width of the margin in this row?
 			var marginWidth = (elementWidth - rowImageWidth[currentRow]) / (numImages[currentRow] + 1);
 			
-			returnStr += _this.htmlForImage(_this._images[i].Index, _this._images[i].Link, newWidth, imageHeight, marginWidth);
+			returnStr += _this.htmlForImage(_this._images[i].Index, _this._images[i].Link, newWidth, imageHeight, marginWidth, 0);
 			/*returnStr += '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
 				'<img class="googleImage" id="' + _this._images[i].Index + '" src="' + _this._images[i].Link + 
 				'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
@@ -154,14 +154,14 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	
 }
 
-ImagesPage.prototype.htmlForImage = function(index, link, width, height, marginWidth) {
+ImagesPage.prototype.htmlForImage = function(index, link, width, height, leftMargin, rightMargin) {
 	return '<a href="#" rel="tooltip" title="Click here if this image badly represents this city">' +
 	'<img class="googleImage" id="' + index + '" src="' + link + 
 	'" onerror="imageError(ImagesPage.prototype._ImagesPage, this)"' + 
 	' onclick="promptForReplacement(ImagesPage.prototype._ImagesPage, this)"' +
 	//' onload="imageLoad(ImagesPage.prototype._ImagesPage, this)"' + 
-	'style="height:' + height + 'px;width:' + width + 'px;margin-left:' + marginWidth + 
-	'px;margin-right:0px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
+	'style="height:' + height + 'px;width:' + width + 'px;margin-left:' + leftMargin + 
+	'px;margin-right:' + rightMargin + 'px;margin-top:0px;margin-bottom:8px;padding:0px"/>' +
 	'</a>';
 }
 
@@ -235,10 +235,15 @@ ImagesPage.prototype.replaceImage = function(img) {
 					newWidth = origHeight * (newImage.ThumbnailWidth / newImage.ThumbnailHeight);
 				}				
 				
-				var widthDifference = newWidth - origWidth;
-				var origMargin = parseInt($(img).css('margin-left')) + widthDifference / 2.0;
+				var widthDifference = origWidth - newWidth;
+				var marginLeft = parseInt($(img).css('margin-left'));
+				var marginRight = 0;
+				if (widthDifference > 0) {
+					marginLeft += widthDifference / 2.0;
+					marginRight = widthDifference / 2.0;
+				}
 				
-				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, newWidth, newHeight, origMargin));
+				$(img).replaceWith(_this.htmlForImage(newImage.Index, newImage.Link, newWidth, newHeight, marginLeft, marginRight));
 			},
 		    error: function(e) {
 		       console.log(e.message);
