@@ -1,6 +1,7 @@
 
 function imageError(imagesPage, img) {
-	imagesPage.removeImage(img);	
+	//imagesPage.removeImage(img);	
+	imagesPage.handleError(img);	
 }
 
 function imageLoad(imagesPage, img){
@@ -24,19 +25,21 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 	elementWidth -= 20;	// #### I couldn't figure out why it was necessary to add this...
 	
 	this._images = Array();
-	this._errorTimeout = 0;
+	//this._errorTimeout = 0;
 	
-	this._imagesLoaded = 0;
-	this._needsReload = false;
+	//this._imagesLoaded = 0;
+	//this._needsReload = false;
 	this._searchStr = '';
+	this._brokenImages = Array();
 	
 		
 	this.search = function(searchStr, displayFunction) {
 
 		ImagesPage.prototype._ImagesPage = this;
 
-		_this._searchStr = searchStr;
-		_this._errorTimeout = 0;	// clear this
+		this._searchStr = searchStr;
+		//this._errorTimeout = 0;	// clear this
+		this._brokenImages = Array();
 		
 		var numImages = 20;
 		
@@ -146,8 +149,8 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 			
 		}
 		
-		this._imagesLoaded = 0;
-		this._needsReload = false;
+		//this._imagesLoaded = 0;
+		//this._needsReload = false;
 		
 		return returnStr;
 	}
@@ -176,7 +179,7 @@ ImagesPage.prototype.imageLoaded = function(img) {
 			$(parent).html(_this._html);
 		}
 	}
-}*/
+}
 
 ImagesPage.prototype.removeImage = function(img) {
 	
@@ -203,6 +206,15 @@ ImagesPage.prototype.removeImage = function(img) {
 			}
 		}
 	}
+}*/
+
+ImagesPage.prototype.handleError = function(img) {
+	var id = $(img).attr('id');
+	if (!(id in this._brokenImages)) {
+		this._brokenImages[id] = img;
+		this.replaceImage(img);
+	}
+	
 }
 
 ImagesPage.prototype.replaceImage = function(img) {

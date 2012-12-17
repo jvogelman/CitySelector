@@ -120,53 +120,11 @@ class City {
 	}
 	
 	function getLastImageDisplayed() {
-		/*
-	
-		static $stmt = null;
-		if ($stmt == null) {
-			// construct a prepared statement to prevent SQL Injection and to look for this city
-			$preparedStmt = "SELECT LastImageDisplayed FROM City WHERE id = ?";
-			if (!($stmt = $this->_mysqli->prepare($preparedStmt))) {
-				$str = "Prepare failed: (" . $this->_mysqli->errno . ") " . $this->_mysqli->error;
-				throw new Exception($str);
-			}
-		}
-		
-		$stmt->bind_param( "i", $this->_id);
-		$stmt->execute();
-		$arr = extractArrayFromSelect($stmt);
-		if (count($arr) == 0) {
-			return null;
-		}
-		
-		return $arr[0]['LastImageDisplayed'];*/
-		return $this->getField('LastImageDisplayed', 'i');
-		
+		return $this->getField('LastImageDisplayed', 'i');		
 	}
 	
 	function getLastImageRetrieved() {
-		/*
-	
-		static $stmt = null;
-		if ($stmt == null) {
-			// construct a prepared statement to prevent SQL Injection and to look for this city
-			$preparedStmt = "SELECT LastImageRetrieved FROM City WHERE id = ?";
-			if (!($stmt = $this->_mysqli->prepare($preparedStmt))) {
-				$str = "Prepare failed: (" . $this->_mysqli->errno . ") " . $this->_mysqli->error;
-				throw new Exception($str);
-			}
-		}
-		
-		$stmt->bind_param( "i", $this->_id);
-		$stmt->execute();
-		$arr = extractArrayFromSelect($stmt);
-		if (count($arr) == 0) {
-			return null;
-		}
-		
-		return $arr[0]['LastImageRetrieved'];*/
-		return $this->getField('LastImageRetrieved', 'i');
-		
+		return $this->getField('LastImageRetrieved', 'i');		
 	}
 
 	function setLastImageDisplayed($value) {
