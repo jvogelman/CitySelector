@@ -43,7 +43,7 @@ function ImagesPage(key, customSearchEngineIdentifier, elementWidth) {
 		
 		var numImages = 20;
 		
-		var urlStr = 'http://localhost/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
+		var urlStr = 'http://www.ninetenthsofaloaf.com/CitySelector/getImages.php?City=' + searchStr + '&callback=?';
 		
 		$.ajax({
 			   type: 'GET',
@@ -212,14 +212,17 @@ ImagesPage.prototype.handleError = function(img) {
 	var id = $(img).attr('id');
 	if (!(id in this._brokenImages)) {
 		this._brokenImages[id] = img;
-		this.replaceImage(img);
+		var _this = this;
+		setTimeout(function(){
+			_this.replaceImage(img);
+		}, 500);
 	}
 	
 }
 
 ImagesPage.prototype.replaceImage = function(img) {
 	var imageIndex = $(img).attr('id');
-	var urlStr = 'http://localhost/CitySelector/replaceImage.php?City=' + this._searchStr + '&ImageIndex=' + imageIndex + '&callback=?';
+	var urlStr = 'http://www.ninetenthsofaloaf.com/CitySelector/replaceImage.php?City=' + this._searchStr + '&ImageIndex=' + imageIndex + '&callback=?';
 
 	var _this = this;
 	
